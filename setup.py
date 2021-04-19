@@ -17,8 +17,8 @@ setup_requirements = [ ]
 test_requirements = [ ]
 
 setup(
-    author="Andres Duarte",
-    author_email='andresduarter13@gmail.com',
+    author="Andres Duarte - Rene Vilar",
+    author_email='andresduarter13@gmail.com - renevs91@gmail.com',
     python_requires='>=3.5',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
