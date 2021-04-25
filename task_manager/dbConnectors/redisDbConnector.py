@@ -1,4 +1,4 @@
-from abstractDbConnector import AbstractDbConnector, DbType
+from dbConnectors.abstractDbConnector import AbstractDbConnector
 from redis import Redis
 
 
@@ -31,7 +31,10 @@ class RedisDbConnector(AbstractDbConnector):
     def __init__(self, connection_string):
         self.connection_string = connection_string
         self.host, self.db, self.port, self.pwd = self.parse_connection_string()
-        self.r = Redis(host=self.host, db=self.db, port=self.port, pwd=self.pwd)
+        if self.pwd:
+            self.r = Redis(host=self.host, db=self.db, port=self.port, password=self.pwd)
+        else:
+            self.r = Redis(host=self.host, db=self.db, port=self.port)
 
     def parse_connection_string(self):
         """
@@ -51,9 +54,9 @@ class RedisDbConnector(AbstractDbConnector):
             if fld == 'host':
                 host = val
             elif fld == 'db':
-                db = val
+                db = int(val)
             elif fld == 'port':
-                port = val
+                port = int(val)
             elif fld == 'pwd':
                 pwd = val
 
@@ -65,24 +68,21 @@ class RedisDbConnector(AbstractDbConnector):
         """
         return self.r.ping()
 
-    def insert(self):
+    def insert(self, k, v):
         """
         Inserts the given data to a db document.
-        TODO
         """
-        pass
+        return self.r.set(k, v)
 
-    def update(self):
+    def update(self, k, v):
         """
         Updates some entry in a db document
-        TODO
         """
-        pass
+        return self.r.set(k, v)
 
-    def delete(self):
+    def delete(self, k):
         """
         deletes an entry in a db document
-        TODO
         """
-        pass
+        return self.r.delete(k)
 

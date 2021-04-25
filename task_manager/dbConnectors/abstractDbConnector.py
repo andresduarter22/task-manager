@@ -2,11 +2,6 @@ from abc import ABC, abstractmethod
 from enum import Enum
 
 
-class DbType(Enum):
-    REDIS = 1
-    MONGO = 2
-
-
 class AbstractDbConnector(ABC):
     """
     Parent class defining general behaviour for all db connections
