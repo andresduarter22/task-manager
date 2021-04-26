@@ -1,4 +1,7 @@
-from abstractDbConnector import AbstractDbConnector, DbType
+from pymongo import MongoClient
+import json
+from task_manager.dbConnectors.abstractDbConnector import AbstractDbConnector, DbType
+from task_manager.tasks.dbTask import DbTask
 
 
 class MongoDbConnector(AbstractDbConnector):
@@ -33,38 +36,31 @@ class MongoDbConnector(AbstractDbConnector):
 
     def __init__(self, connection_string):
         self.connection_string = connection_string
+        self.host, self.port, self.db, self.collection = self.parse_connection_string()
+
+    def parse_connection_string(self):
+        values = self.connection_string.split(',')
+        host, port, db, collection = values[0], int(values[1]), values[2], values[3]
+
+        return host, port, db, collection
 
     def connect(self):
-        """
-        connects to the DB.
-        TODO
-        """
-        pass
+        client = MongoClient(self.host, self.port)
+        return client, self.db, self.collection
 
-    def insert(self):
-        """
-        Inserts the given data to a db document.
-        TODO
-        """
-        pass
+    def insert(self, document):
+        client = self.connect()
+        DbTask.create_entry(document)
 
-    def update(self):
-        """
-        Updates some entry in a db document
-        TODO
-        """
-        pass
+    def update(self, entry_id, new_value):
+        DbTask.create_entry(entry_id, new_value)
 
-    def delete(self):
-        """
-        deletes an entry in a db document
-        TODO
-        """
-        pass
+    def delete(self, id_entry):
+        DbTask.delete_entry(id_entry)
 
-    def validate(self):
-        """
-        validates if the input data is the right format
-        TODO
-        """
-        pass
+    def validate(self, document):
+        try:
+            a_json = json.loads(document)
+            print(a_json)
+        except:
+            print("Data isn't a JSON")
