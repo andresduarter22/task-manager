@@ -1,16 +1,9 @@
 import sys
-import pprint
-from pymongo import MongoClient
 from task_manager.tasks.task import Task
 from task_manager.configurations.dbConfiguration import DbConfiguration
 from task_manager.dbConnectors.mongoDbConnector import MongoDbConnector
 
 sys.path.append('../')
-
-try:
-    client = MongoClient('localhost', 27017)
-except Exception as e:
-    print('Cannot connect to Mongo client.')
 
 
 class DbTask(Task):
@@ -25,7 +18,10 @@ class DbTask(Task):
         configuration object to be used in the task
     priority: int
         determines which task gets preference for executing first if more than one task are scheduled at the same time.
-
+    db_mongo: str
+        select the Database name to be used
+    collection_mongo: str
+        select the collection name to be used
     Methods
     -------
 
@@ -42,46 +38,49 @@ class DbTask(Task):
         removes a DB entry
     """
 
-    def __init__(self, config: DbConfiguration, priority: int, db_mongo, collection_mongo):
+    def __init__(self, config: DbConfiguration, priority: int, db_mongo: str = 'task_manager',
+                 collection_mongo: str = 'test'):
+        super().__init__(config, priority)
         self.config = config
         self.priority = priority
         self.db = db_mongo
         self.collection = collection_mongo
 
     def list_document(self):
-        res = []
-        db = client[self.db]
-        collection = db[self.collection]
-        for info in collection.find():
-            res.append(info)
-            pprint.pprint(info)
-        print("It works!", self.db, self.collection)
-        return res
+        """
+        Calls select_all function of MongoDbConnector
+        """
+        local = 'localhost'
+        port = '27017'
+        mongo = MongoDbConnector(local + ',' + port + ',' + self.db + ',' + self.collection)
+        return mongo.select_all()
 
     def create_entry(self, document):
-        mongo_connector = MongoDbConnector
-        mongo_connector.connect()
-        db = client[self.db]
-        collection = db[self.collection]
-        collection.insert_one(document)
+        """
+        Calls insert function of MongoDbConnector
+        """
+        local = 'localhost'
+        port = '27017'
+        mongo = MongoDbConnector(local + ',' + port + ',' + self.db + ',' + self.collection)
+        res = mongo.insert(document)
+        return res
 
     def update_entry(self, entry_id, new_value):
-        db = client[self.db]
-        collection = db[self.collection]
-        old = {
-            'id': entry_id
-        }
-        new = {"$set": new_value}
-        collection.update_one(old, new)
+        """
+        Calls update function of MongoDbConnector
+        """
+        local = 'localhost'
+        port = '27017'
+        mongo = MongoDbConnector(local + ',' + port + ',' + self.db + ',' + self.collection)
+        res = mongo.update(entry_id, new_value)
+        return res
 
     def delete_entry(self, number):
-        db = client[self.db]
-        collection = db[self.collection]
-        collection.delete_one({'number': number})
-
-    def validate(self):
         """
-        Checks that all parameters are valid for task execution.
-        TODO
+        Calls delete function of MongoDbConnector
         """
-        pass
+        local = 'localhost'
+        port = '27017'
+        mongo = MongoDbConnector(local + ',' + port + ',' + self.db + ',' + self.collection)
+        res = mongo.delete(number)
+        return res
