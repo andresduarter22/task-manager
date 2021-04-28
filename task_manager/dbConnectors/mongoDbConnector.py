@@ -46,13 +46,13 @@ class MongoDbConnector(AbstractDbConnector):
 
     def connect(self):
         client = MongoClient(self.host, self.port)
-        return client, self.db, self.collection
+        db = client[self.db]
+        collection = db[self.collection]
+        return client, db, collection
 
     def select_all(self):
         res = []
-        client = self.connect()
-        db = client[self.db]
-        collection = db[self.collection]
+        client, db, collection = self.connect()
         for info in collection.find():
             res.append(info)
             pprint.pprint(info)
@@ -60,27 +60,25 @@ class MongoDbConnector(AbstractDbConnector):
         return res
 
     def insert(self, document):
-        client = self.connect()
-        db = client[self.db]
-        collection = db[self.collection]
+        client, db, collection = self.connect()
+        self.validate(document)
         collection.insert_one(document)
         return "Data successfully inserted"
 
     def update(self, entry_id, new_value):
-        client = self.connect()
-        db = client[self.db]
-        collection = db[self.collection]
+        client, db, collection = self.connect()
+        self.validate(new_value)
         old = {
             'id': entry_id
         }
         new = {"$set": new_value}
         collection.update_one(old, new)
+        return "Document successfully updated"
 
     def delete(self, id_entry):
-        client = self.connect()
-        db = client[self.db]
-        collection = db[self.collection]
+        client, db, collection = self.connect()
         collection.delete_one({'id': id_entry})
+        return "Document successfully deleted"
 
     @staticmethod
     def validate(document):

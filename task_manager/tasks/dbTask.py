@@ -50,18 +50,14 @@ class DbTask(Task):
         """
         Calls select_all function of MongoDbConnector
         """
-        local = 'localhost'
-        port = '27017'
-        mongo = MongoDbConnector(local + ',' + port + ',' + self.db + ',' + self.collection)
+        mongo = MongoDbConnector(self.mongo_format())
         return mongo.select_all()
 
     def create_entry(self, document):
         """
         Calls insert function of MongoDbConnector
         """
-        local = 'localhost'
-        port = '27017'
-        mongo = MongoDbConnector(local + ',' + port + ',' + self.db + ',' + self.collection)
+        mongo = MongoDbConnector(self.mongo_format())
         res = mongo.insert(document)
         return res
 
@@ -69,9 +65,7 @@ class DbTask(Task):
         """
         Calls update function of MongoDbConnector
         """
-        local = 'localhost'
-        port = '27017'
-        mongo = MongoDbConnector(local + ',' + port + ',' + self.db + ',' + self.collection)
+        mongo = MongoDbConnector(self.mongo_format())
         res = mongo.update(entry_id, new_value)
         return res
 
@@ -79,8 +73,15 @@ class DbTask(Task):
         """
         Calls delete function of MongoDbConnector
         """
+        mongo = MongoDbConnector(self.mongo_format())
+        res = mongo.delete(number)
+        return res
+
+    def mongo_format(self):
+        """
+        Formats the connection string that mongoDbConnector needs
+        """
         local = 'localhost'
         port = '27017'
-        mongo = MongoDbConnector(local + ',' + port + ',' + self.db + ',' + self.collection)
-        res = mongo.delete(number)
+        res = local + ',' + port + ',' + self.db + ',' + self.collection
         return res
