@@ -45,7 +45,7 @@ class FileTask(Task):
 
     def read_json(self):
         """
-        reads JSON FILE
+        reads JSON File
         """
         self.data = []
         with open(f'{self.config.directory}/{self.config.filename}') as json_file:
