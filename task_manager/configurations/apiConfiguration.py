@@ -1,4 +1,4 @@
-from queryBasedConfiguration import QueryBasedConfiguration
+from configurations.queryBasedConfiguration import QueryBasedConfiguration
 from enum import Enum
 
 
@@ -32,12 +32,12 @@ class ApiConfiguration(QueryBasedConfiguration):
     set_up():
         Prepares the configuration for being used when executing the task.
     """
-    def __init__(self, data: list, query: str, credentials: dict, url: str, type: ApiMethods):
+    def __init__(self, data: list, query: str, credentials: dict, url: str, rType: str):
         self.data = data
         self.query = query
         self.credentials = credentials
         self.url = url
-        self.type = type
+        self.rType = rType
 
 
     def set_up(self):
