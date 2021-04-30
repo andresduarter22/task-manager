@@ -1,11 +1,4 @@
 from configurations.queryBasedConfiguration import QueryBasedConfiguration
-from enum import Enum
-
-
-class ApiMethods(Enum):
-    POST = 1
-    GET = 2
-    PUT = 3
 
 
 class ApiConfiguration(QueryBasedConfiguration):

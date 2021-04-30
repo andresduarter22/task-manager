@@ -1,4 +1,4 @@
-from task import Task
+from tasks.task import Task
 import sys
 import json
 import yaml
@@ -16,6 +16,8 @@ class FileTask(Task):
 
     Attributes
     ----------
+    data : list
+        the data to be sent or returned
     config: Configuration
         configuration object to be used in the task
     priority: int
@@ -37,11 +39,23 @@ class FileTask(Task):
         writes a yaml file
     """
 
-    def __init__(self, config: FileConfiguration, priority: int,  data: list, is_writing: bool):
+    def __init__(self, config: FileConfiguration, priority: int,  data: list):
         self.config = config
         self.priority = priority
         self.data = data
-        self.is_writing = is_writing
+
+    def execute(self):
+        self.validate()
+        if self.config.is_writing:
+            if self.config.f_type == 'JSON':
+                return self.write_json()
+            else:
+                return self.write_yaml()
+        else:
+            if self.config.f_type == 'JSON':
+                return self.read_json()
+            else:
+                return self.read_yaml()
 
     def read_json(self):
         """
@@ -57,8 +71,9 @@ class FileTask(Task):
         """
         creates a new json file with the loaded data
         """
-        with open(f'{self.config.directory}/{self.config.filename}') as json_file:
-            json.dump(self.data[0], json_file)
+        with open(f'{self.config.directory}/{self.config.filename}', 'w') as json_file:
+            json.dump(self.data, json_file)
+        return 'DONE!'
 
     def read_yaml(self):
         """
@@ -75,16 +90,17 @@ class FileTask(Task):
         """
         with open(f'{self.config.directory}/{self.config.filename}', 'w') as yaml_file:
             self.data = yaml.dump(self.data[0], yaml_file)
+        return 'DONE!'
 
     def validate(self):
         """
         Checks that all parameters are valid for task execution.
         """
         if self.config.f_type == 'YAML':
-            if self.is_writing:
+            if self.config.is_writing:
                 try:
-                    yaml.load(self.data)
-                except yaml.YAMLError as e:
+                    yaml.dump(self.data[0], Loader=yaml.FullLoader)
+                except Exception as e:
                     print(e)
             else:
                 try:
@@ -95,7 +111,7 @@ class FileTask(Task):
                     print(e)
 
         elif self.config.f_type == 'JSON':
-            if self.is_writing:
+            if self.config.is_writing:
                 try:
                     json.dumps(self.data)
                 except json.JSONDecodeError as e:
