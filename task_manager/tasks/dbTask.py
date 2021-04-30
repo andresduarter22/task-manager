@@ -37,7 +37,6 @@ class DbTask(Task):
     delete_entry():
         removes a DB entry
     """
-
     def __init__(self, config: DbConfiguration, priority: int, db_mongo: str = 'task_manager',
                  collection_mongo: str = 'test'):
         super().__init__(config, priority)

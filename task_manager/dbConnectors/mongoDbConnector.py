@@ -1,5 +1,4 @@
 import json
-import pprint
 from pymongo import MongoClient
 from task_manager.dbConnectors.abstractDbConnector import AbstractDbConnector
 
@@ -38,45 +37,41 @@ class MongoDbConnector(AbstractDbConnector):
         super().__init__(connection_string)
         self.connection_string = connection_string
         self.host, self.port, self.db, self.collection = self.parse_connection_string()
+        self.client = MongoClient(self.host, self.port)
+        self.db = self.client[self.db]
+        self.collection = self.db[self.collection]
 
     def parse_connection_string(self):
         values = self.connection_string.split(',')
         host, port, db, collection = values[0], int(values[1]), values[2], values[3]
         return host, port, db, collection
 
-    def connect(self):
-        client = MongoClient(self.host, self.port)
-        db = client[self.db]
-        collection = db[self.collection]
-        return client, db, collection
-
     def select_all(self):
-        res = []
-        client, db, collection = self.connect()
-        for info in collection.find():
-            res.append(info)
-            pprint.pprint(info)
-        print("It works!", self.db, self.collection)
-        return res
+        collection = self.collection
+        response = [info for info in collection.find()]
+        self.client.close()
+        return response
 
     def insert(self, document):
-        client, db, collection = self.connect()
+        collection = self.collection
         self.validate(document)
         collection.insert_one(document)
+        self.client.close()
         return "Data successfully inserted"
 
     def update(self, entry_id, new_value):
-        client, db, collection = self.connect()
+        collection = self.collection
         self.validate(new_value)
         old = {
             'id': entry_id
         }
         new = {"$set": new_value}
         collection.update_one(old, new)
+        self.client.close()
         return "Document successfully updated"
 
     def delete(self, id_entry):
-        client, db, collection = self.connect()
+        collection = self.collection
         collection.delete_one({'id': id_entry})
         return "Document successfully deleted"
 
