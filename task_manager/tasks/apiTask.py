@@ -4,6 +4,7 @@ import requests
 import json
 
 sys.path.append('../')
+from utils.logger import CustomLogger
 from configurations.apiConfiguration import ApiConfiguration
 
 
@@ -32,9 +33,11 @@ class ApiTask(Task):
         requests some data over the configured API
     """
 
-    def __init__(self, config: ApiConfiguration, priority: int):
+    def __init__(self, config: ApiConfiguration, priority: int, data: list):
+        self.logger = CustomLogger(__name__)
         self.config = config
         self.priority = priority
+        self.data = data
 
     def execute(self):
         if self.config.rType == 'GET':
@@ -47,13 +50,13 @@ class ApiTask(Task):
         """
         requests some data over the configured API
         """
-        return requests.get(self.config.url)
+        return self.logger.info(requests.get(self.config.url))
 
     def post_to_api(self):
         """
         sends data to the configured API
         """
-        json_data = json.dumps(self.config.data)
+        json_data = json.dumps(self.data)
         return requests.post(self.config.url, json_data)
 
     def validate(self):
@@ -61,6 +64,6 @@ class ApiTask(Task):
         Checks that all parameters are valid for task execution.
         """
         try:
-            json.dumps(self.config.data)
+            json.dumps(self.data)
         except Exception as e:
             print('JSON Serialization for API Task failed!')

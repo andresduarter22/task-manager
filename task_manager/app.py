@@ -7,11 +7,11 @@ if __name__ == "__main__":
     data = [{'name': "John", 'age': 31, 'city': "New York"}]
     query = ''
     credentials = None
-    #url = 'https://httpbin.org/get'
-    url = 'https://httpbin.org/post'
+    url = 'https://httpbin.org/get'
+    #url = 'https://httpbin.org/post'
     # url = 'httpbin.org/put'
     # url = 'httpbin.org/delete'
-    rType = 'POST'
+    rType = 'GET'
     newConfig = ApiConfiguration(data, query, credentials, url, rType)
     myTask = ApiTask(newConfig, 100)
-    print(myTask.execute())
+    print(myTask.__dict__)

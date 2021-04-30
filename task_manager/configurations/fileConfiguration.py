@@ -30,9 +30,10 @@ class FileConfiguration(BaseConfiguration):
     set_up():
         Prepares the configuration for being used when executing the task.
     """
-    def __init__(self, data: list, directory: str, f_type: FileTypeList):
+    def __init__(self, data: list, directory: str, filename: str, f_type: str):
         self.data = data
         self.directory = directory
+        self.filename = filename
         self.f_type = f_type
 
     def set_up(self):
