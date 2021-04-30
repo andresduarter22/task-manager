@@ -1,8 +1,9 @@
-from task import Task
 import sys
-from enum import Enum
+from task_manager.tasks.task import Task
+from task_manager.configurations.dbConfiguration import DbConfiguration
+from task_manager.dbConnectors.mongoDbConnector import MongoDbConnector
+
 sys.path.append('../')
-from configurations.dbConfiguration import DbConfiguration
 
 
 class DbTask(Task):
@@ -17,7 +18,10 @@ class DbTask(Task):
         configuration object to be used in the task
     priority: int
         determines which task gets preference for executing first if more than one task are scheduled at the same time.
-
+    db_mongo: str
+        select the Database name to be used
+    collection_mongo: str
+        select the collection name to be used
     Methods
     -------
 
@@ -33,42 +37,50 @@ class DbTask(Task):
     delete_entry():
         removes a DB entry
     """
-
-    def __init__(self, config: DbConfiguration, priority: int):
+    def __init__(self, config: DbConfiguration, priority: int, db_mongo: str = 'task_manager',
+                 collection_mongo: str = 'test'):
+        super().__init__(config, priority)
         self.config = config
         self.priority = priority
+        self.db = db_mongo
+        self.collection = collection_mongo
 
     def list_document(self):
         """
-        lists all entries in a DB table
-        TODO
+        Calls select_all function of MongoDbConnector
         """
-        pass
+        mongo = MongoDbConnector(self.mongo_format())
+        return mongo.select_all()
 
-    def create_entry(self):
+    def create_entry(self, document):
         """
-        creates a new entry with the set configuration
-        TODO
+        Calls insert function of MongoDbConnector
         """
-        pass
+        mongo = MongoDbConnector(self.mongo_format())
+        res = mongo.insert(document)
+        return res
 
-    def update_entry(self):
+    def update_entry(self, entry_id, new_value):
         """
-        requests some data over the configured API
-        TODO
+        Calls update function of MongoDbConnector
         """
-        pass
+        mongo = MongoDbConnector(self.mongo_format())
+        res = mongo.update(entry_id, new_value)
+        return res
 
-    def delete_entry(self):
+    def delete_entry(self, number):
         """
-        sends data to the configured API
-        TODO
+        Calls delete function of MongoDbConnector
         """
-        pass
+        mongo = MongoDbConnector(self.mongo_format())
+        res = mongo.delete(number)
+        return res
 
-    def validate(self):
+    def mongo_format(self):
         """
-        Checks that all parameters are valid for task execution.
-        TODO
+        Formats the connection string that mongoDbConnector needs
         """
-        pass
+        local = 'localhost'
+        port = '27017'
+        res = local + ',' + port + ',' + self.db + ',' + self.collection
+        return res
