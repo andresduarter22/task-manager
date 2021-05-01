@@ -1,6 +1,8 @@
-from task import Task
+from tasks.task import Task
 import sys
-from enum import Enum
+import json
+import yaml
+
 
 sys.path.append('../')
 from configurations.fileConfiguration import FileConfiguration
@@ -14,6 +16,8 @@ class FileTask(Task):
 
     Attributes
     ----------
+    data : list
+        the data to be sent or returned
     config: Configuration
         configuration object to be used in the task
     priority: int
@@ -35,41 +39,87 @@ class FileTask(Task):
         writes a yaml file
     """
 
-    def __init__(self, config: FileConfiguration, priority: int):
+    def __init__(self, config: FileConfiguration, priority: int,  data: list):
         self.config = config
         self.priority = priority
+        self.data = data
+
+    def execute(self):
+        self.validate()
+        if self.config.is_writing:
+            if self.config.f_type == 'JSON':
+                return self.write_json()
+            else:
+                return self.write_yaml()
+        else:
+            if self.config.f_type == 'JSON':
+                return self.read_json()
+            else:
+                return self.read_yaml()
 
     def read_json(self):
         """
-        lists all entries in a DB table
-        TODO
+        reads JSON File
         """
-        pass
+        self.data = []
+        with open(f'{self.config.directory}/{self.config.filename}') as json_file:
+            self.data.append(json.load(json_file))
+
+        return self.data
 
     def write_json(self):
         """
-        creates a new entry with the set configuration
-        TODO
+        creates a new json file with the loaded data
         """
-        pass
+        with open(f'{self.config.directory}/{self.config.filename}', 'w') as json_file:
+            json.dump(self.data, json_file)
+        return 'DONE!'
 
     def read_yaml(self):
         """
-        requests some data over the configured API
-        TODO
+        reads a YAML file
         """
-        pass
+        self.data = []
+        with open(f'{self.config.directory}/{self.config.filename}') as yaml_file:
+            self.data.append(yaml.load(yaml_file, Loader=yaml.FullLoader))
+        return self.data
 
     def write_yaml(self):
         """
-        sends data to the configured API
-        TODO
+        writes a YAML file with the loaded data
         """
-        pass
+        with open(f'{self.config.directory}/{self.config.filename}', 'w') as yaml_file:
+            self.data = yaml.dump(self.data[0], yaml_file)
+        return 'DONE!'
 
     def validate(self):
         """
         Checks that all parameters are valid for task execution.
-        TODO
         """
-        pass
+        if self.config.f_type == 'YAML':
+            if self.config.is_writing:
+                try:
+                    yaml.dump(self.data[0], Loader=yaml.FullLoader)
+                except Exception as e:
+                    print(e)
+            else:
+                try:
+                    with open(f'{self.config.directory}/{self.config.filename}', 'r') as yaml_file:
+                        yaml_data = yaml_file.read()
+                    yaml.safe_load(yaml_data)
+                except yaml.YAMLError as e:
+                    print(e)
+
+        elif self.config.f_type == 'JSON':
+            if self.config.is_writing:
+                try:
+                    json.dumps(self.data)
+                except json.JSONDecodeError as e:
+                    print(e)
+            else:
+                try:
+                    with open(f'{self.config.directory}/{self.config.filename}', 'r') as json_file:
+                        json_data = json_file.read()
+                    json.loads(json_data)
+                except yaml.YAMLError as e:
+                    print(e)

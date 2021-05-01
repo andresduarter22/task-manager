@@ -30,8 +30,6 @@ class CustomLogger(logging.Logger):
 
         f_handler = logging.FileHandler('file.log')
         f_handler.setLevel(logging.DEBUG)
-        formatter2 = logging.Formatter(' formatter: %(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        f_handler.setFormatter(formatter2)
 
         self.handlers = self.handlers + [ch, f_handler]
         for handler in self.handlers:
