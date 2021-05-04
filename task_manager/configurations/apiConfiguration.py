@@ -9,15 +9,11 @@ class ApiConfiguration(QueryBasedConfiguration):
 
     Attributes
     ----------
-    data : list
-        the data to be sent or returned to the API
-    query : str
-        the query string to execute in the DB/send request to API
     credentials : dict
         the login credentials
     url : string
         the URL of the API
-    type : ApiMethods
+    r_type : ApiMethods
         the method to use in the request
 
     Methods
@@ -25,12 +21,10 @@ class ApiConfiguration(QueryBasedConfiguration):
     set_up():
         Prepares the configuration for being used when executing the task.
     """
-    def __init__(self, data: list, query: str, credentials: dict, url: str, rType: str):
-        self.data = data
-        self.query = query
+    def __init__(self, credentials: dict, url: str, r_type: str):
         self.credentials = credentials
         self.url = url
-        self.rType = rType
+        self.r_type = r_type
 
 
     def set_up(self):

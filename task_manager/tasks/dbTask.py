@@ -22,6 +22,11 @@ class DbTask(Task):
         select the Database name to be used
     collection_mongo: str
         select the collection name to be used
+    exec_type  : str
+        defines the execution type
+    task_id: str
+        defines the unique identifier for the task
+
     Methods
     -------
 
@@ -37,13 +42,15 @@ class DbTask(Task):
     delete_entry():
         removes a DB entry
     """
-    def __init__(self, config: DbConfiguration, priority: int, db_mongo: str = 'task_manager',
+    def __init__(self, config: DbConfiguration, priority: int, exec_type: object,  db_mongo: str = 'task_manager',
                  collection_mongo: str = 'test'):
         super().__init__(config, priority)
         self.config = config
         self.priority = priority
         self.db = db_mongo
         self.collection = collection_mongo
+        self.exec_type = exec_type
+        super.__init__(self)
 
     def list_document(self):
         """

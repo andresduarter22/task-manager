@@ -20,6 +20,10 @@ class ApiTask(Task):
         configuration object to be used in the task
     priority: int
         determines which task gets preference for executing first if more than one task are scheduled at the same time.
+    exec_type  : str
+        defines the execution type
+    task_id: str
+        defines the unique identifier for the task
 
     Methods
     -------
@@ -33,11 +37,13 @@ class ApiTask(Task):
         requests some data over the configured API
     """
 
-    def __init__(self, config: ApiConfiguration, priority: int, data: list):
+    def __init__(self, config: ApiConfiguration, priority: int, data: list, exec_type: object):
         self.logger = CustomLogger(__name__)
         self.config = config
         self.priority = priority
         self.data = data
+        self.exec_type = exec_type
+        super.__init__(self)
 
     def execute(self):
         if self.config.rType == 'GET':
