@@ -86,9 +86,6 @@ class Scheduler:
             self.last_update_timestamp = datetime.now().timestamp()
             self.update()
 
-
-
-
     def update(self):
         """
         moves tasks to the execution queue
