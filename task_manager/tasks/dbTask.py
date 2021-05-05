@@ -18,8 +18,6 @@ class DbTask(Task):
         configuration object to be used in the task
     priority: int
         determines which task gets preference for executing first if more than one task are scheduled at the same time.
-    db_mongo: str
-        select the Database name to be used
     collection_mongo: str
         select the collection name to be used
     Methods
@@ -37,12 +35,11 @@ class DbTask(Task):
     delete_entry():
         removes a DB entry
     """
-    def __init__(self, config: DbConfiguration, priority: int, db_mongo: str = 'task_manager',
-                 collection_mongo: str = 'test'):
+    def __init__(self, config: DbConfiguration, priority: int, collection_mongo: str = 'test'):
         super().__init__(config, priority)
         self.config = config
         self.priority = priority
-        self.db = db_mongo
+        self.db = config.db_name
         self.collection = collection_mongo
 
     def list_document(self):

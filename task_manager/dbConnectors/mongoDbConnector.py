@@ -1,4 +1,6 @@
 import json
+
+from bson import json_util
 from pymongo import MongoClient
 from task_manager.dbConnectors.abstractDbConnector import AbstractDbConnector
 
@@ -50,7 +52,7 @@ class MongoDbConnector(AbstractDbConnector):
         collection = self.collection
         response = [info for info in collection.find()]
         self.client.close()
-        return response
+        return self.parse_json(response)
 
     def insert(self, document):
         collection = self.collection
@@ -74,6 +76,10 @@ class MongoDbConnector(AbstractDbConnector):
         collection = self.collection
         collection.delete_one({'id': id_entry})
         return "Document successfully deleted"
+
+    @staticmethod
+    def parse_json(document):
+        return json.loads(json_util.dumps(document))
 
     @staticmethod
     def validate(document):

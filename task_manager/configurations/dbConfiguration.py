@@ -1,4 +1,4 @@
-from queryBasedConfiguration import QueryBasedConfiguration
+from task_manager.configurations.queryBasedConfiguration import QueryBasedConfiguration
 from enum import Enum
 
 
