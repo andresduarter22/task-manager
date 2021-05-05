@@ -1,5 +1,4 @@
 import json
-
 from bson import json_util
 from pymongo import MongoClient
 from task_manager.dbConnectors.abstractDbConnector import AbstractDbConnector
@@ -35,13 +34,14 @@ class MongoDbConnector(AbstractDbConnector):
 
     """
 
-    def __init__(self, connection_string):
+    def __init__(self, connection_string, data):
         super().__init__(connection_string)
         self.connection_string = connection_string
         self.host, self.port, self.db, self.collection = self.parse_connection_string()
         self.client = MongoClient(self.host, self.port)
         self.db = self.client[self.db]
         self.collection = self.db[self.collection]
+        self.data = data
 
     def parse_connection_string(self):
         values = self.connection_string.split(',')
@@ -54,27 +54,30 @@ class MongoDbConnector(AbstractDbConnector):
         self.client.close()
         return self.parse_json(response)
 
-    def insert(self, document):
+    def insert(self):
         collection = self.collection
+        document = self.data[0]
         self.validate(document)
         collection.insert_one(document)
         self.client.close()
         return "Data successfully inserted"
 
-    def update(self, entry_id, new_value):
+    def update(self):
         collection = self.collection
+        id_entry, new_value = self.data[0], self.data[1]
         self.validate(new_value)
         old = {
-            'id': entry_id
+            '_id': int(id_entry)
         }
         new = {"$set": new_value}
         collection.update_one(old, new)
         self.client.close()
         return "Document successfully updated"
 
-    def delete(self, id_entry):
+    def delete(self):
+        id_entry = self.data[0]
         collection = self.collection
-        collection.delete_one({'id': id_entry})
+        collection.delete_one({"_id": int(id_entry)})
         return "Document successfully deleted"
 
     @staticmethod

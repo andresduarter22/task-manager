@@ -41,36 +41,37 @@ class DbTask(Task):
         self.priority = priority
         self.db = config.db_name
         self.collection = collection_mongo
+        self.mongo = MongoDbConnector(self.mongo_format(), self.config.data)
 
     def list_document(self):
         """
         Calls select_all function of MongoDbConnector
         """
-        mongo = MongoDbConnector(self.mongo_format())
+        mongo = self.mongo
         return mongo.select_all()
 
-    def create_entry(self, document):
+    def create_entry(self):
         """
         Calls insert function of MongoDbConnector
         """
-        mongo = MongoDbConnector(self.mongo_format())
-        res = mongo.insert(document)
+        mongo = self.mongo
+        res = mongo.insert()
         return res
 
-    def update_entry(self, entry_id, new_value):
+    def update_entry(self):
         """
         Calls update function of MongoDbConnector
         """
-        mongo = MongoDbConnector(self.mongo_format())
-        res = mongo.update(entry_id, new_value)
+        mongo = self.mongo
+        res = mongo.update()
         return res
 
-    def delete_entry(self, number):
+    def delete_entry(self):
         """
         Calls delete function of MongoDbConnector
         """
-        mongo = MongoDbConnector(self.mongo_format())
-        res = mongo.delete(number)
+        mongo = self.mongo
+        res = mongo.delete()
         return res
 
     def mongo_format(self):
