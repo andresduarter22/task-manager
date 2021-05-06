@@ -3,27 +3,24 @@ from configurations.apiConfiguration import ApiConfiguration
 from tasks.apiTask import ApiTask
 from configurations.fileConfiguration import FileConfiguration
 from tasks.fileTask import FileTask
-import taskEndpoints
 import json
 from flask import Flask
-import time, threading
 from utils.configuration import Configuration
-from execution.scheduler import Scheduler
+from flask_restful import Api
+from api_v1_0.resources.apiTaskEndpoints import ApiTaskListEndpoints, ApiTaskEndpoints
 
-app = Flask(__name__)
 
-app.add_url_rule('/tasks/api/add', methods=['POST'], view_func=taskEndpoints.add_api_task)
+class TaskManagerApp(object):
+    def __init__(self):
+        self.app = Flask(__name__)
+        api = Api(self.app)
+        api.add_resource(ApiTaskListEndpoints, "/api/v1/api_tasks", endpoint='api_tasks')
+        api.add_resource(ApiTaskEndpoints, "/api/v1/api_task/<int:id>", endpoint='api_task')
+
+    def run(self):
+        self.app.run(debug=True)
+
 
 if __name__ == '__main__':
-    cfg = Configuration()
-    scheduler_update_timer = cfg.get_config_var('scheduler_refresh_rate_ms')
-    print(scheduler_update_timer)
-    app.run(debug=True, use_reloader=True)
-
-    threading.Timer(10, application.reset()).start()
-    time.sleep(scheduler_update_timer)
-    print('update 1')
-    time.sleep(scheduler_update_timer)
-    print('update 2')
-    time.sleep(scheduler_update_timer)
-    print('update 3')
+    tm = TaskManagerApp()
+    tm.run()
