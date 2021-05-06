@@ -1,1 +1,6 @@
 Flask
+requests
+PyYAML
+setuptools~=56.0.0
+redis~=3.5.3
+pymongo
