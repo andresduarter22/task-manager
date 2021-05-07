@@ -2,6 +2,7 @@ import json
 from bson import json_util
 from pymongo import MongoClient
 from task_manager.dbConnectors.abstractDbConnector import AbstractDbConnector
+from task_manager.utils.exceptions import CustomException
 
 
 class MongoDbConnector(AbstractDbConnector):
@@ -14,7 +15,8 @@ class MongoDbConnector(AbstractDbConnector):
     ----------
     connection_string : str
         the string with all information necessary to connect to the db
-
+    data: list
+        List that contains the id of the entry or the document that functions need to work
     Methods
     -------
     connect():
@@ -74,6 +76,7 @@ class MongoDbConnector(AbstractDbConnector):
 
     def delete(self):
         id_entry, collection = int(self.data[0]), self.collection
+        CustomException.abort_if_entry_doesnt_exist(id_entry, collection)
         entry = {"_id": id_entry}
         collection.delete_one(entry)
         self.client.close()
@@ -88,11 +91,3 @@ class MongoDbConnector(AbstractDbConnector):
     @staticmethod
     def parse_json(document):
         return json.loads(json_util.dumps(document))
-
-    # @staticmethod
-    # def validate(document):
-    #     try:
-    #         a_json = json.loads(document)
-    #         print(a_json)
-    #     except json.JSONDecodeError as error:
-    #         print(error.msg)
