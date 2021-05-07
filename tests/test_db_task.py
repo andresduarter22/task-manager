@@ -39,10 +39,3 @@ class Evaluate(TestCase):
              "response": "Document successfully updated"
                 }
         self.assertEqual(expected, actual)
-
-    # def test_delete(self):
-    #     mongo = MongoDbConnector("localhost,27017,db_task,test", ["2"])
-    #     mongo.delete()
-    #     actual = mongo.select_by_id()
-    #     expected = None
-    #     self.assertEqual(expected, actual)
