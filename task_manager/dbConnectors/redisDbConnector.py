@@ -1,4 +1,4 @@
-from dbConnectors.abstractDbConnector import AbstractDbConnector
+from task_manager.dbConnectors.abstractDbConnector import AbstractDbConnector
 from redis import Redis
 
 
@@ -32,9 +32,12 @@ class RedisDbConnector(AbstractDbConnector):
         self.connection_string = connection_string
         self.host, self.db, self.port, self.pwd = self.parse_connection_string()
         if self.pwd:
-            self.r = Redis(host=self.host, db=self.db, port=self.port, password=self.pwd)
+            self.r = Redis(host=self.host, db=self.db, port=self.port, password=self.pwd, decode_responses=True)
         else:
-            self.r = Redis(host=self.host, db=self.db, port=self.port)
+            self.r = Redis(host=self.host, db=self.db, port=self.port, decode_responses=True)
+
+    def keys(self):
+        return self.r.keys()
 
     def parse_connection_string(self):
         """
@@ -85,4 +88,10 @@ class RedisDbConnector(AbstractDbConnector):
         deletes an entry in a db document
         """
         return self.r.delete(k)
+
+    def select(self, k):
+        """
+        selects an entry in a db document
+        """
+        return self.r.get(k)
 

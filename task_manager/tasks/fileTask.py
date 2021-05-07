@@ -1,10 +1,10 @@
-from tasks.task import Task
+from task_manager.tasks.task import Task
 import sys
 import json
 import yaml
 
 
-sys.path.append('../')
+sys.path.append('../../')
 from configurations.fileConfiguration import FileConfiguration
 
 

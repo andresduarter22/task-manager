@@ -1,4 +1,5 @@
 from configurations.queryBasedConfiguration import QueryBasedConfiguration
+import definitions as defs
 
 
 class ApiConfiguration(QueryBasedConfiguration):
@@ -24,6 +25,14 @@ class ApiConfiguration(QueryBasedConfiguration):
         Prepares the configuration for being used when executing the task.
     """
     def __init__(self, load_default: bool, credentials: dict = None, url: str = None, r_type: str = None):
+        """
+        Initalizes the configuration object, either from a default JSON config file or from the parameters passed
+
+        :param load_default: bool that determines if the configuration is loaded from a default file or not.
+        :param credentials: OPTIONAL authentication info
+        :param url: OPTIONAL - url for the api request
+        :param r_type: OPTIONAL GET or POST request
+        """
         if load_default:
             import json
             with open(defs.PATHS['default_api_task_config']) as json_file:
@@ -42,3 +51,4 @@ class ApiConfiguration(QueryBasedConfiguration):
         TODO
         """
         pass
+

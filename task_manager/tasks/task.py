@@ -2,7 +2,7 @@ import sys
 from abc import ABC, abstractmethod
 import uuid
 
-sys.path.append('../')
+sys.path.append('../../')
 from configurations.baseConfiguration import BaseConfiguration
 
 
