@@ -15,7 +15,7 @@ Misc variables:
     query
     credentials
 """
-from configurations.baseConfiguration import BaseConfiguration
+from task_manager.configurations.baseConfiguration import BaseConfiguration
 
 
 class QueryBasedConfiguration(BaseConfiguration):

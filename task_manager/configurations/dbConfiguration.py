@@ -1,10 +1,5 @@
-from queryBasedConfiguration import QueryBasedConfiguration
+from task_manager.configurations.queryBasedConfiguration import QueryBasedConfiguration
 from enum import Enum
-
-
-class DbTypeList(Enum):
-    MONGO = 1
-    REDIS = 2
 
 
 class DbConfiguration(QueryBasedConfiguration):
@@ -32,7 +27,7 @@ class DbConfiguration(QueryBasedConfiguration):
         Prepares the configuration for being used when executing the task.
     """
 
-    def __init__(self, data: list, query: str, credentials: dict, db_name: str, type: DbTypeList):
+    def __init__(self, data: list, query: str, credentials: dict, db_name: str):
         self.data = data
         self.query = query
         self.credentials = credentials

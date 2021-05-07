@@ -1,0 +1,287 @@
+openapi: 3.0.0
+info:
+  description: "Task manager app"
+  version: "1.0.0"
+  title: "Task manager"
+  contact:
+    email: "andres.duarte@jala-foundation.org"
+paths:
+  /task:
+    get:
+      tags:
+      - "General task paths"
+      summary: "Select list of all tasks"
+      description: ""
+      operationId: "selectAllTasks"
+      responses:
+        "405":
+          description: "Invalid input"
+  /task/{id_task}:
+    get:
+      parameters:
+      - in: path
+        name: id_task
+        required: true
+        schema:
+          type: integer
+      tags:
+      - "General task paths"
+      summary: "Select a task by id"
+      description: ""
+      operationId: "getTaskByID"
+      responses:
+        "405":
+          description: "Invalid input"
+    delete:
+      parameters:
+      - in: path
+        name: id_task
+        required: true
+        schema:
+          type: integer
+      tags:
+      - "General task paths"
+      summary: "Delete a task by id"
+      description: ""
+      operationId: "deleteTaskByID"
+      responses:
+        "405":
+          description: "Invalid input"
+  /task/{type_task}:
+    get:
+      parameters:
+      - in: path
+        name: type_task
+        required: true
+        schema:
+          type: integer
+      tags:
+      - "General task paths"
+      summary: "Select a task by id"
+      description: ""
+      operationId: "getTaskByType"
+      responses:
+        "405":
+          description: "Invalid input"
+    delete:
+      parameters:
+      - in: path
+        name: type_task
+        required: true
+        schema:
+          type: string
+      tags:
+      - "General task paths"
+      summary: "Delete a task by type"
+      description: ""
+      operationId: "deleteTaskByType"
+      responses:
+        "405":
+          description: "Invalid input"
+  /task/API:
+     get:
+        tags:
+        - "API task operations"
+        summary: "Retrive a document from an API"
+        description: ""
+        responses:
+          "405":
+            description: "Invalid input"
+     post:
+      tags:
+      - "API task operations"
+      summary: "Send a data to a API"
+      description: ""
+      operationId: "updatePet"
+      responses:
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Pet not found"
+        "405":
+          description: "Validation exception"
+  /task/DB:
+    post:
+      tags:
+      - "DB task operations"
+      summary: "Insert an entry to mongoDB"
+      description: ""
+      responses:
+        "405":
+          description: "Invalid input"
+  /task/DB/{id_db}:
+    get:
+      parameters:
+      - in: path
+        name: id_db
+        required: true
+        schema:
+          type: integer
+      tags:
+      - "DB task operations"
+      summary: "Select an entry to mongoDB"
+      description: ""
+      responses:
+        "405":
+          description: "Invalid input"
+    put:
+      parameters:
+      - in: path
+        name: id_db
+        required: true
+        schema:
+          type: integer
+      tags:
+      - "DB task operations"
+      summary: "Update an entry to mongoDB"
+      description: ""
+      responses:
+        "200":
+          description: "Ok"
+        "201":
+          description: "Ok"
+        "405":
+          description: "Invalid input"
+    delete:
+      parameters:
+      - in: path
+        name: id_db
+        required: true
+        schema:
+          type: integer
+      tags:
+      - "DB task operations"
+      summary: "Delete an entry to mongoDB"
+      description: ""
+      responses:
+        "405":
+          description: "Invalid input"
+  /task/file:
+    post:
+      tags:
+      - "File task operations"
+      summary: "Create and write a file"
+      description: ""
+      responses:
+        "405":
+          description: "Invalid input"
+  /task/file/{id_file}:
+    get:
+      parameters:
+      - in: path
+        name: id_file
+        required: true
+        schema:
+          type: integer
+      tags:
+      - "File task operations"
+      summary: "Select a file to read by id"
+      description: ""
+      responses:
+        "405":
+          description: "Invalid input"
+    post:
+      parameters:
+      - in: path
+        name: id_file
+        required: true
+        schema:
+          type: integer
+      tags:
+      - "File task operations"
+      summary: "Select a file to write by id"
+      description: ""
+      responses:
+        "405":
+          description: "Invalid input"
+    delete:
+      parameters:
+      - in: path
+        name: id_file
+        required: true
+        schema:
+          type: integer
+      tags:
+      - "File task operations"
+      summary: "Delete a file by id"
+      description: ""
+      responses:
+        "405":
+          description: "Invalid input"
+  /configuration:
+    post:
+      tags:
+      - "Configuration"
+      summary: "Select a task by id"
+      description: ""
+      responses:
+        "405":
+          description: "Invalid input"
+    put:
+      tags:
+      - "Configuration"
+      summary: "Select a task by id"
+      description: ""
+      responses:
+        "405":
+          description: "Invalid input"
+    delete:
+      tags:
+      - "Configuration"
+      summary: "Select a task by id"
+      description: ""
+      responses:
+        "405":
+          description: "Invalid input"
+  /scheduler:
+    get:
+      tags:
+      - "Scheduler"
+      summary: "Select all scheduled tasks"
+      description: ""
+      responses:
+        "405":
+          description: "Invalid input"
+    delete:
+      tags:
+      - "Scheduler"
+      summary: "Delete all scheduled tasks"
+      description: ""
+      responses:
+        "405":
+          description: "Invalid input"
+  /scheduler/time:
+    post:
+      tags:
+      - "Scheduler"
+      summary: "Create a task with a specific time"
+      description: ""
+      responses:
+        "405":
+          description: "Invalid input"
+  /scheduler/periodic:
+    post:
+      tags:
+      - "Scheduler"
+      summary: "Create a task periodically"
+      description: ""
+      responses:
+        "405":
+          description: "Invalid input"
+  /scheduler/{id_scheduler}:
+    delete:
+      parameters:
+      - in: path
+        name: id_scheduler
+        required: true
+        schema:
+          type: integer
+      tags:
+      - "Scheduler"
+      summary: "Delete a specific scheduled task by id"
+      description: ""
+      responses:
+        "405":
+          description: "Invalid input"
+
+

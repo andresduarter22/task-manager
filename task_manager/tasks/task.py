@@ -1,7 +1,7 @@
 import sys
 from abc import ABC, abstractmethod
+from task_manager.configurations.baseConfiguration import BaseConfiguration
 sys.path.append('../')
-from configurations.baseConfiguration import BaseConfiguration
 
 
 class Task(ABC):
