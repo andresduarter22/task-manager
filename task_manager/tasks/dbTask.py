@@ -47,38 +47,39 @@ class DbTask(Task):
         """
         Calls select_all function of MongoDbConnector
         """
-        mongo = self.mongo
-        return mongo.select_all()
+        return self.mongo.select_all()
+
+    def list_one(self):
+        """
+        Calls select_all function of MongoDbConnector
+        """
+        return self.mongo.select_by_id()
 
     def create_entry(self):
         """
         Calls insert function of MongoDbConnector
         """
-        mongo = self.mongo
-        res = mongo.insert()
-        return res
+        response = self.mongo.insert()
+        return response
 
     def update_entry(self):
         """
         Calls update function of MongoDbConnector
         """
-        mongo = self.mongo
-        res = mongo.update()
-        return res
+        response = self.mongo.update()
+        return response
 
     def delete_entry(self):
         """
         Calls delete function of MongoDbConnector
         """
-        mongo = self.mongo
-        res = mongo.delete()
-        return res
+        response = self.mongo.delete()
+        return response
 
     def mongo_format(self):
         """
         Formats the connection string that mongoDbConnector needs
         """
-        local = 'localhost'
-        port = '27017'
-        res = local + ',' + port + ',' + self.db + ',' + self.collection
-        return res
+        local, port = 'localhost', '27017'
+        response = local + ',' + port + ',' + self.db + ',' + self.collection
+        return response
