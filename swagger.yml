@@ -1,0 +1,340 @@
+openapi: 3.0.0
+info:
+  description: "Task manager app"
+  version: "1.0.0"
+  title: "Task manager"
+  contact:
+    email: "andres.duarte@jala-foundation.org"
+paths:
+  /api/v1/task:
+    get:
+      tags:
+      - "General task paths"
+      summary: "Select list of all tasks"
+      description: ""
+      operationId: "selectAllTasks"
+      responses:
+        "200":
+          description: "Ok"
+        "405":
+          description: "Method not allowed"
+  /api/v1/task/{id_task}:
+    get:
+      parameters:
+      - in: path
+        name: id_task
+        required: true
+        schema:
+          type: integer
+      tags:
+      - "General task paths"
+      summary: "Select a task by id"
+      description: ""
+      operationId: "getTaskByID"
+      responses:
+        "200":
+          description: "Ok"
+        "400":
+          description: "Bad request"
+        "405":
+          description: "Method not allowed"
+    delete:
+      parameters:
+      - in: path
+        name: id_task
+        required: true
+        schema:
+          type: integer
+      tags:
+      - "General task paths"
+      summary: "Delete a task by id"
+      description: ""
+      operationId: "deleteTaskByID"
+      responses:
+        "200":
+          description: "Ok"
+        "405":
+          description: "Method not allowed"
+  /api/v1/task/{type_task}:
+    get:
+      parameters:
+      - in: path
+        name: type_task
+        required: true
+        schema:
+          type: integer
+      tags:
+      - "General task paths"
+      summary: "Select all tasks of a certain type"
+      description: ""
+      operationId: "getTaskByType"
+      responses:
+        "200":
+          description: "Ok"
+        "201":
+          description: "Created"
+        "405":
+          description: "Method not allowed"
+    delete:
+      parameters:
+      - in: path
+        name: type_task
+        required: true
+        schema:
+          type: string
+      tags:
+      - "General task paths"
+      summary: "Delete all tasks of a certain type"
+      description: ""
+      operationId: "deleteTaskByType"
+      responses:
+        "200":
+          description: "Ok"
+        "201":
+          description: "Created"
+        "405":
+          description: "Method not allowed"
+  /api/v1/task/API:
+     get:
+        tags:
+        - "API task operations"
+        summary: "Retrive a document from an API"
+        description: ""
+        responses:
+          "200":
+            description: "Ok"
+          "201":
+            description: "Created"
+          "405":
+            description: "Method not allowed"
+     post:
+      tags:
+      - "API task operations"
+      summary: "Send a data to a API"
+      description: ""
+      operationId: "updatePet"
+      responses:
+        "400":
+          description: "Invalid ID supplied"
+        "200":
+          description: "Ok"
+        "201":
+          description: "Created"
+        "405":
+          description: "Method not allowed"
+  /api/v1/task/DB:
+    post:
+      tags:
+      - "DB task operations"
+      summary: "Insert an entry to mongoDB"
+      description: "Needs a body with db_config for the connection to mongoDB and a data that is the document that is going to be insert into mongoDB"
+      requestBody:
+        content:
+          application/json:
+            example:
+              data:
+                - _id: 1
+                  First name: Andres
+              db_config:
+                - db: db_task
+                  collection: test
+
+      responses:
+        "200":
+          description: "Ok"
+        "201":
+          description: "Created"
+        "405":
+          description: "Method not allowed"
+    get:
+      tags:
+      - "DB task operations"
+      summary: "Select all entries of the selected DB in mongoDB"
+      description: "Needs a body with db_config for the connection to mongoDB."
+      responses:
+        "200":
+          description: "List of all documents with the configuration"
+        "405":
+          description: "Method not allowed"
+  /api/v1/task/DB/{id_db}:
+    get:
+      parameters:
+      - in: path
+        name: id_db
+        required: true
+        schema:
+          type: integer
+      tags:
+      - "DB task operations"
+      summary: "Select an entry to mongoDB"
+      description: "Needs an id as argument and a body with db_config for the connection to mongoDB."
+      responses:
+        "200":
+          description: "Ok"
+        "201":
+          description: "Created"
+        "405":
+          description: "Method not allowed"
+    put:
+      parameters:
+      - in: path
+        name: id_db
+        required: true
+        schema:
+          type: integer
+      tags:
+      - "DB task operations"
+      summary: "Update an entry to mongoDB"
+      description: "Needs an id as a parameter and a body with db_config for the connection to mongoDB and a data that is the document that is going to be updated into mongoDB "
+      responses:
+        "200":
+          description: "Ok"
+        "201":
+          description: "Created"
+        "405":
+          description: "Method not allowed"
+    delete:
+      parameters:
+      - in: path
+        name: id_db
+        required: true
+        schema:
+          type: integer
+      tags:
+      - "DB task operations"
+      summary: "Delete an entry to mongoDB by id"
+      description: "Needs an id as a parameter"
+      responses:
+        "200":
+          description: "Ok"
+        "201":
+          description: "Created"
+        "405":
+          description: "Method not allowed"
+  /api/v1/task/file:
+    post:
+      tags:
+      - "File task operations"
+      summary: "Create and write a file"
+      description: ""
+      responses:
+        "405":
+          description: "Invalid input"
+  /api/v1/task/file/{id_file}:
+    get:
+      parameters:
+      - in: path
+        name: id_file
+        required: true
+        schema:
+          type: integer
+      tags:
+      - "File task operations"
+      summary: "Select a file to read by id"
+      description: ""
+      responses:
+        "405":
+          description: "Invalid input"
+    post:
+      parameters:
+      - in: path
+        name: id_file
+        required: true
+        schema:
+          type: integer
+      tags:
+      - "File task operations"
+      summary: "Select a file to write by id"
+      description: ""
+      responses:
+        "405":
+          description: "Invalid input"
+    delete:
+      parameters:
+      - in: path
+        name: id_file
+        required: true
+        schema:
+          type: integer
+      tags:
+      - "File task operations"
+      summary: "Delete a file by id"
+      description: ""
+      responses:
+        "405":
+          description: "Invalid input"
+  /api/v1/configuration:
+    post:
+      tags:
+      - "Configuration"
+      summary: "Select a task by id"
+      description: ""
+      responses:
+        "405":
+          description: "Invalid input"
+    put:
+      tags:
+      - "Configuration"
+      summary: "Select a task by id"
+      description: ""
+      responses:
+        "405":
+          description: "Invalid input"
+    delete:
+      tags:
+      - "Configuration"
+      summary: "Select a task by id"
+      description: ""
+      responses:
+        "405":
+          description: "Invalid input"
+  /api/v1/scheduler:
+    get:
+      tags:
+      - "Scheduler"
+      summary: "Select all scheduled tasks"
+      description: ""
+      responses:
+        "405":
+          description: "Invalid input"
+    delete:
+      tags:
+      - "Scheduler"
+      summary: "Delete all scheduled tasks"
+      description: ""
+      responses:
+        "405":
+          description: "Invalid input"
+  /api/v1/scheduler/time:
+    post:
+      tags:
+      - "Scheduler"
+      summary: "Create a task with a specific time"
+      description: ""
+      responses:
+        "405":
+          description: "Invalid input"
+  /api/v1/scheduler/periodic:
+    post:
+      tags:
+      - "Scheduler"
+      summary: "Create a task periodically"
+      description: ""
+      responses:
+        "405":
+          description: "Invalid input"
+  /api/v1/scheduler/{id_scheduler}:
+    delete:
+      parameters:
+      - in: path
+        name: id_scheduler
+        required: true
+        schema:
+          type: integer
+      tags:
+      - "Scheduler"
+      summary: "Delete a specific scheduled task by id"
+      description: ""
+      responses:
+        "405":
+          description: "Invalid input"

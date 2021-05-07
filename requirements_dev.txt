@@ -1,5 +1,4 @@
-Flask
-flask_restful
+
 requests
 PyYAML
 setuptools~=56.0.0

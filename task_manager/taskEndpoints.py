@@ -1,62 +1,58 @@
-from flask import Flask
 from flask import jsonify
-from flask import request
-from configurations.apiConfiguration import ApiConfiguration
-from tasks.apiTask import ApiTask
-
-def return_all_tasks():
-    '''
-    TODO
-    :return:
-    '''
-    return 'TODO'
-
-def return_one_task(name):
-    '''
-    TODO
-    :return:
-    '''
-    return 'TODO'
+from task_manager.tasks.dbTask import DbTask
+from task_manager.configurations.dbConfiguration import DbConfiguration
+from flask_restful import Resource, reqparse, abort
 
 
-def add_dummy_api_task():
-    """
-    TODO
-    :return:
-    """
-    # LOAD CONFIG
-    import json
-    with open('../data/configurations/api/base_config_1.json') as json_file:
-        d = json.load(json_file)
-    credentials = d['credentials']
-    url = d['url']
-    r_type = d['r_type']
-    cfg = ApiConfiguration(credentials, url, r_type)
-    tsk = ApiTask(cfg, '', [])
-    # TODO: Register task execution in DB
-    # TODO: Register task execution in Scheduler
+class TaskDBEndpointsId(Resource):
+    def __init__(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('data', type=dict), parser.add_argument('db_config', type=dict)
+        self.parser = parser
+        self.request_data = self.parser.parse_args()
+        self.selected_db, self.selected_collection, = \
+            self.request_data["db_config"]["db"], self.request_data["db_config"]["collection"]
+        self.document = self.request_data["data"]
 
-    return tsk.execute()
+    def get(self, id_db):
+        config = DbConfiguration([id_db], "get", {}, self.selected_db)
+        task = DbTask(config, 1, self.selected_collection)
+        response = jsonify(task.list_one())
+        # redis (id, "TASK", "user", "asap", exec_time, "DB", self.selected_db, "MONGO",
+        # "test", response, response_success, 1, request.get_json())
+        return response
+
+    def put(self, id_db):
+        config = DbConfiguration([id_db, self.document], "put", {}, self.selected_db)
+        task = DbTask(config, 1, self.selected_collection)
+        response = jsonify(task.update_entry())
+        return response
+
+    def delete(self, id_db):
+        config = DbConfiguration([id_db], "delete", {}, self.selected_db)
+        task = DbTask(config, 1, self.selected_collection)
+        response = jsonify(task.delete_entry())
+        return response
 
 
-def add_api_task(config, priority, data):
-    '''
-    TODO
-    :return:
-    '''
-    tsk = ApiTask(config, priority, data)
-    return tsk.execute()
+class TaskDBEndpoints(Resource):
+    def __init__(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('data', type=dict), parser.add_argument('db_config', type=dict)
+        self.parser = parser
+        self.request_data = self.parser.parse_args()
+        self.selected_db, self.selected_collection,  = \
+            self.request_data["db_config"]["db"], self.request_data["db_config"]["collection"]
+        self.document = self.request_data["data"]
 
-def edit_api_task(name):
-    '''
-    TODO
-    :return:
-    '''
-    return 'TODO'
+    def get(self):
+        config = DbConfiguration([None], "get", {}, self.selected_db)
+        task = DbTask(config, 1, self.selected_collection)
+        response = jsonify(task.list_document())
+        return response
 
-def delete_api_task(name):
-    '''
-    TODO
-    :return:
-    '''
-    return 'TODO'
+    def post(self):
+        config = DbConfiguration([self.document], "post", {}, self.selected_db)
+        task = DbTask(config, 1, self.selected_collection)
+        response = jsonify(task.create_entry())
+        return response
