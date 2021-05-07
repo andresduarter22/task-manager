@@ -1,7 +1,7 @@
 from flask import jsonify
 from task_manager.tasks.dbTask import DbTask
 from task_manager.configurations.dbConfiguration import DbConfiguration
-from flask_restful import Resource, reqparse
+from flask_restful import Resource, reqparse, abort
 
 
 class TaskDBEndpointsId(Resource):
