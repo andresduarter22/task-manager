@@ -20,7 +20,6 @@ class ApiTaskEndpoints(Resource):
 
         :returns dictionary {id: task_info}
         """
-        print('ENTERED')
         #args = self.reqparse.parse_args()
         try:
             config = ast.literal_eval(request.args['config'])

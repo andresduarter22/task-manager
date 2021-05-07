@@ -37,7 +37,7 @@ class ApiTask(Task):
         requests some data over the configured API
     """
 
-    def __init__(self, config: ApiConfiguration, priority: int, data: list):
+    def __init__(self, config: object, priority: int, data: list):
         """
         Initializes the API Task object
         :param config: ApiConfiguration object
@@ -86,7 +86,10 @@ class ApiTask(Task):
         """
         Checks that all parameters are valid for task execution.
         """
+        correct = False
         try:
             json.dumps(self.data)
+            correct=True
         except Exception as e:
             print('JSON Serialization for API Task failed!')
+        return correct
