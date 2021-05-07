@@ -6,7 +6,7 @@ info:
   contact:
     email: "andres.duarte@jala-foundation.org"
 paths:
-  /task:
+  /api/v1/task:
     get:
       tags:
       - "General task paths"
@@ -14,9 +14,11 @@ paths:
       description: ""
       operationId: "selectAllTasks"
       responses:
+        "200":
+          description: "Ok"
         "405":
-          description: "Invalid input"
-  /task/{id_task}:
+          description: "Method not allowed"
+  /api/v1/task/{id_task}:
     get:
       parameters:
       - in: path
@@ -30,8 +32,12 @@ paths:
       description: ""
       operationId: "getTaskByID"
       responses:
+        "200":
+          description: "Ok"
+        "400":
+          description: "Bad request"
         "405":
-          description: "Invalid input"
+          description: "Method not allowed"
     delete:
       parameters:
       - in: path
@@ -45,9 +51,11 @@ paths:
       description: ""
       operationId: "deleteTaskByID"
       responses:
+        "200":
+          description: "Ok"
         "405":
-          description: "Invalid input"
-  /task/{type_task}:
+          description: "Method not allowed"
+  /api/v1/task/{type_task}:
     get:
       parameters:
       - in: path
@@ -57,12 +65,16 @@ paths:
           type: integer
       tags:
       - "General task paths"
-      summary: "Select a task by id"
+      summary: "Select all tasks of a certain type"
       description: ""
       operationId: "getTaskByType"
       responses:
+        "200":
+          description: "Ok"
+        "201":
+          description: "Created"
         "405":
-          description: "Invalid input"
+          description: "Method not allowed"
     delete:
       parameters:
       - in: path
@@ -72,21 +84,29 @@ paths:
           type: string
       tags:
       - "General task paths"
-      summary: "Delete a task by type"
+      summary: "Delete all tasks of a certain type"
       description: ""
       operationId: "deleteTaskByType"
       responses:
+        "200":
+          description: "Ok"
+        "201":
+          description: "Created"
         "405":
-          description: "Invalid input"
-  /task/API:
+          description: "Method not allowed"
+  /api/v1/task/API:
      get:
         tags:
         - "API task operations"
         summary: "Retrive a document from an API"
         description: ""
         responses:
+          "200":
+            description: "Ok"
+          "201":
+            description: "Created"
           "405":
-            description: "Invalid input"
+            description: "Method not allowed"
      post:
       tags:
       - "API task operations"
@@ -96,20 +116,47 @@ paths:
       responses:
         "400":
           description: "Invalid ID supplied"
-        "404":
-          description: "Pet not found"
+        "200":
+          description: "Ok"
+        "201":
+          description: "Created"
         "405":
-          description: "Validation exception"
-  /task/DB:
+          description: "Method not allowed"
+  /api/v1/task/DB:
     post:
       tags:
       - "DB task operations"
       summary: "Insert an entry to mongoDB"
-      description: ""
+      description: "Needs a body with db_config for the connection to mongoDB and a data that is the document that is going to be insert into mongoDB"
+      requestBody:
+        content:
+          application/json:
+            example:
+              data:
+                - _id: 1
+                  First name: Andres
+              db_config:
+                - db: db_task
+                  collection: test
+
       responses:
+        "200":
+          description: "Ok"
+        "201":
+          description: "Created"
         "405":
-          description: "Invalid input"
-  /task/DB/{id_db}:
+          description: "Method not allowed"
+    get:
+      tags:
+      - "DB task operations"
+      summary: "Select all entries of the selected DB in mongoDB"
+      description: "Needs a body with db_config for the connection to mongoDB."
+      responses:
+        "200":
+          description: "List of all documents with the configuration"
+        "405":
+          description: "Method not allowed"
+  /api/v1/task/DB/{id_db}:
     get:
       parameters:
       - in: path
@@ -120,10 +167,14 @@ paths:
       tags:
       - "DB task operations"
       summary: "Select an entry to mongoDB"
-      description: ""
+      description: "Needs an id as argument and a body with db_config for the connection to mongoDB."
       responses:
+        "200":
+          description: "Ok"
+        "201":
+          description: "Created"
         "405":
-          description: "Invalid input"
+          description: "Method not allowed"
     put:
       parameters:
       - in: path
@@ -134,14 +185,14 @@ paths:
       tags:
       - "DB task operations"
       summary: "Update an entry to mongoDB"
-      description: ""
+      description: "Needs an id as a parameter and a body with db_config for the connection to mongoDB and a data that is the document that is going to be updated into mongoDB "
       responses:
         "200":
           description: "Ok"
         "201":
-          description: "Ok"
+          description: "Created"
         "405":
-          description: "Invalid input"
+          description: "Method not allowed"
     delete:
       parameters:
       - in: path
@@ -151,12 +202,16 @@ paths:
           type: integer
       tags:
       - "DB task operations"
-      summary: "Delete an entry to mongoDB"
-      description: ""
+      summary: "Delete an entry to mongoDB by id"
+      description: "Needs an id as a parameter"
       responses:
+        "200":
+          description: "Ok"
+        "201":
+          description: "Created"
         "405":
-          description: "Invalid input"
-  /task/file:
+          description: "Method not allowed"
+  /api/v1/task/file:
     post:
       tags:
       - "File task operations"
@@ -165,7 +220,7 @@ paths:
       responses:
         "405":
           description: "Invalid input"
-  /task/file/{id_file}:
+  /api/v1/task/file/{id_file}:
     get:
       parameters:
       - in: path
@@ -208,7 +263,7 @@ paths:
       responses:
         "405":
           description: "Invalid input"
-  /configuration:
+  /api/v1/configuration:
     post:
       tags:
       - "Configuration"
@@ -233,7 +288,7 @@ paths:
       responses:
         "405":
           description: "Invalid input"
-  /scheduler:
+  /api/v1/scheduler:
     get:
       tags:
       - "Scheduler"
@@ -250,7 +305,7 @@ paths:
       responses:
         "405":
           description: "Invalid input"
-  /scheduler/time:
+  /api/v1/scheduler/time:
     post:
       tags:
       - "Scheduler"
@@ -259,7 +314,7 @@ paths:
       responses:
         "405":
           description: "Invalid input"
-  /scheduler/periodic:
+  /api/v1/scheduler/periodic:
     post:
       tags:
       - "Scheduler"
@@ -268,7 +323,7 @@ paths:
       responses:
         "405":
           description: "Invalid input"
-  /scheduler/{id_scheduler}:
+  /api/v1/scheduler/{id_scheduler}:
     delete:
       parameters:
       - in: path
@@ -283,5 +338,3 @@ paths:
       responses:
         "405":
           description: "Invalid input"
-
-
