@@ -29,10 +29,9 @@ class Task(ABC):
     validate():
         Checks that all parameters are valid for task execution.
     """
-    def __init__(self, config: BaseConfiguration, priority: int, exec_type: object):
+    def __init__(self, config: BaseConfiguration, priority: int):
         self.config = config
         self.priority = priority
-        self.exec_type = exec_type
         self.task_id = uuid.uuid4().hex
 
     def validate(self):
