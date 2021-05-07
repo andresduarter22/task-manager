@@ -1,9 +1,10 @@
-from task_manager.tasks.task import Task
+from tasks.task import Task
 import sys
 import requests
 import json
 
-sys.path.append('../../')
+sys.path.append('../')
+from utils.logger import CustomLogger
 from configurations.apiConfiguration import ApiConfiguration
 
 
@@ -37,14 +38,8 @@ class ApiTask(Task):
         requests some data over the configured API
     """
 
-    def __init__(self, config: object, priority: int, data: list):
-        """
-        Initializes the API Task object
-        :param config: ApiConfiguration object
-        :param priority: priority to be executed (only used in executionQueue)
-        :param data: data to send to the API Request
-        """
-        #self.logger = CustomLogger(__name__)
+    def __init__(self, config: ApiConfiguration, priority: int, data: list):
+        self.logger = CustomLogger(__name__)
         self.config = config
         self.priority = priority
         self.data = data
@@ -52,44 +47,32 @@ class ApiTask(Task):
         super(ApiTask, self).__init__(self.config, self.priority, self.data)
 
     def execute(self):
-        """
-        executes the task, based on the type specified in its configuration object
-
-        :returns Response attributes fetched from get_from_api() or post_to_api().
-        """
         if self.config.r_type == 'GET':
-            return self.get_from_api()
+            self.get_from_api()
         elif self.config.r_type == 'POST':
             self.validate()
-            return self.post_to_api()
-        else:
-            return None
+            self.post_to_api()
 
     def get_from_api(self):
         """
         requests some data over the configured API
-
-        :returns Response from the request.get()
         """
         return requests.get(self.config.url)
 
     def post_to_api(self):
         """
         sends data to the configured API
-
-        :returns Response from the request.post()
         """
+        print(f'pre-jason: {self.data}')
         json_data = json.dumps(self.data)
+        print(f'DATAAA: {json_data}')
         return requests.post(self.config.url, json_data)
 
     def validate(self):
         """
         Checks that all parameters are valid for task execution.
         """
-        correct = False
         try:
             json.dumps(self.data)
-            correct=True
         except Exception as e:
             print('JSON Serialization for API Task failed!')
-        return correct

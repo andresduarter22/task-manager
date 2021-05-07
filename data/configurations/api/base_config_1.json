@@ -1,0 +1,5 @@
+{
+    "credentials": {},
+    "url": "https://httpbin.org/post",
+    "r_type": "POST"
+}
