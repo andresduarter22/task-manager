@@ -1,7 +1,9 @@
-Flask
+Flask~=1.1.2
 flask_restful
 requests
 PyYAML
 setuptools~=56.0.0
 redis~=3.5.3
 pymongo
+build
+pytest
