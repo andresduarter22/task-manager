@@ -1,5 +1,4 @@
 from configurations.queryBasedConfiguration import QueryBasedConfiguration
-import definitions as defs
 
 
 class ApiConfiguration(QueryBasedConfiguration):
