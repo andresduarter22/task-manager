@@ -3,14 +3,18 @@ services:
     web:
         build: .
         ports:
-            - "5000:5000"
+            - 5000:5000
     redis:
         image: redis:latest
         ports:
             - 6379:6379
         command: [ "redis-server"]
-    mongo:
-        image: mongo:lastest
+    mongodb:
+        image : mongo
+        container_name: mongodb
+        volumes:
+            - /home/ubuntu/mongo_data/:/etc/db
         ports:
-            - "27017:27017"
+            - 27017:27017
+        restart: unless-stopped
 
