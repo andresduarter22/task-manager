@@ -49,7 +49,7 @@ class ApiTask(Task):
         self.priority = priority
         self.data = data
         # self.exec_type = exec_type
-        super(ApiTask, self).__init__(self.config, self.priority, self.data)
+        super(ApiTask, self).__init__(self.config, self.priority)
 
     def execute(self):
         """
