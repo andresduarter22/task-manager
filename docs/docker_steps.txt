@@ -1,0 +1,42 @@
+1. Preparation
+	a. Clone the Github repo:
+		https://github.com/andresduarter22/Task-manager.git
+	b. open terminal in the repo folder
+	c. Create a docker network
+		docker network create tasknet
+
+
+2. Start the MongoDB and application container
+	a. run the mongo container with the command:
+		docker run -d --name taskdb --network tasknet -e MONGO_INITDB_ROOT_USERNAME= -e MONGO_INITDB_ROOT_PASSWORD= -v ~/mongo-data:/data/db mongo
+	b. create .dockerignore file:
+		vim .dockerignore
+		// Type 'I' to edit and write:
+		.dockerignore
+		Dockerfile
+		.gitignore
+		docs/
+		.idea
+		// ESC :wq
+	c. (ALREADY IN REPO) create the Dockerfile:
+		vim Dockerfile
+		// Type 'I' to edit and write:
+		# syntax=docker/dockerfile:1
+		FROM python:3.8
+		WORKDIR .
+		ENV FLASK_APP=app.py
+		ENV FLASK_ENV=development
+		RUN apk add --no-cache gcc musl-dev linux-headers
+		COPY requirements.txt requirements.txt
+		RUN pip install -r requirements.txt
+		EXPOSE 5000
+		COPY . .
+		WORKDIR /task_manager
+		CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
+		// ESC :wq
+	d. build the dockerfile:
+		docker build -t taskapp:0.1 .
+	e. run the taskapp image in a container:
+		docker run --rm -it --network tasknet -p 5000:5000 taskapp:0.1
+
+3. Connect to the app via http://0.0.0.0:5000
