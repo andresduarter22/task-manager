@@ -1,19 +1,29 @@
-version: '3'
+version: "3.5"
 services:
     redis:
         image: redis:latest
-        ports:
-            - 6379:6379
-        command: [ "redis-server"]
+#        ports:
+#            - 6379:6379
+        networks:
+            - tasknet
     mongo:
-        image: mongo:lastest
-        ports:
-            - "27017:27017"
+        image: mongo:latest
+        networks:
+            - tasknet
+        volumes:
+            - mongodata:/data/db
     web:
         links:
-            - "mongo:mongo"
+            - mongo:mongo
         build: .
         ports:
-            - "5000:5000"
+            - 5000:5000
         depends_on:
             - mongo
+        networks:
+            - tasknet
+networks:
+    tasknet:
+        name: tasknet
+volumes:
+    mongodata:
