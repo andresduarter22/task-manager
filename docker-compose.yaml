@@ -1,9 +1,5 @@
 version: '3'
 services:
-    web:
-        build: .
-        ports:
-            - "5000:5000"
     redis:
         image: redis:latest
         ports:
@@ -13,4 +9,11 @@ services:
         image: mongo:lastest
         ports:
             - "27017:27017"
-
+    web:
+        links:
+            - "mongo:mongo"
+        build: .
+        ports:
+            - "5000:5000"
+        depends_on:
+            - mongo

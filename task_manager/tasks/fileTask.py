@@ -5,7 +5,7 @@ import yaml
 
 
 sys.path.append('../../')
-from configurations.fileConfiguration import FileConfiguration
+from task_manager.configurations.fileConfiguration import FileConfiguration
 
 
 class FileTask(Task):

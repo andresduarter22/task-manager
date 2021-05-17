@@ -1,7 +1,7 @@
 from flask_restful import Resource, reqparse
 from flask import jsonify
 from flask import request, abort
-from configurations.apiConfiguration import ApiConfiguration
+from task_manager.configurations.apiConfiguration import ApiConfiguration
 from task_manager.tasks.apiTask import ApiTask
 import ast
 

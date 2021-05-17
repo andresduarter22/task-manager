@@ -1,4 +1,4 @@
-from configurations.baseConfiguration import BaseConfiguration
+from task_manager.configurations.baseConfiguration import BaseConfiguration
 
 
 class FileConfiguration(BaseConfiguration):

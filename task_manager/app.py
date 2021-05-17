@@ -9,6 +9,8 @@ def create_app():
     app = Flask(__name__)
     api = Api(app)
     api.add_resource(ApiTaskEndpoints, "/api/v1/api_tasks", endpoint='api_tasks')
+    api.add_resource(TaskDBEndpoints, "/api/v1/tasks/db", endpoint='db')
+    api.add_resource(TaskDBEndpointsId, "/api/v1/tasks/db/<int:id_db>")
     return app
 
 
@@ -20,7 +22,7 @@ class TaskManagerApp(object):
         self.app = Flask(__name__)
         api = Api(self.app)
         api.add_resource(ApiTaskEndpoints, "/api/v1/api_tasks", endpoint='api_tasks')
-        api.add_resource(TaskDBEndpoints, "/api/v1/tasks/db")
+        api.add_resource(TaskDBEndpoints, "/api/v1/tasks/db", endponit='db')
         api.add_resource(TaskDBEndpointsId, "/api/v1/tasks/db/<int:id_db>")
         super(TaskManagerApp, self).__init__()
 

@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 import uuid
 
 sys.path.append('../../')
-from configurations.baseConfiguration import BaseConfiguration
+from task_manager.configurations.baseConfiguration import BaseConfiguration
 
 
 

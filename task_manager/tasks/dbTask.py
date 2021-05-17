@@ -87,6 +87,6 @@ class DbTask(Task):
         """
         Formats the connection string that mongoDbConnector needs
         """
-        local, port = 'localhost', '27017'
+        local, port = 'taskdb', '27017'
         response = local + ',' + port + ',' + self.db + ',' + self.collection
         return response

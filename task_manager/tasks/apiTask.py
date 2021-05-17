@@ -4,7 +4,7 @@ import requests
 import json
 
 sys.path.append('../../')
-from configurations.apiConfiguration import ApiConfiguration
+from task_manager.configurations.apiConfiguration import ApiConfiguration
 
 
 

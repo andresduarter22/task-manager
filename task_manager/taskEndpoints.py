@@ -1,13 +1,14 @@
 from flask import jsonify
 from task_manager.tasks.dbTask import DbTask
 from task_manager.configurations.dbConfiguration import DbConfiguration
-from flask_restful import Resource, reqparse, abort
+from flask_restful import Resource, reqparse
 
 
 class TaskDBEndpointsId(Resource):
     def __init__(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('data', type=dict), parser.add_argument('db_config', type=dict)
+        default_db = {"db": "db_task", "collection": "test"}
+        parser.add_argument('data', type=dict), parser.add_argument('db_config', type=dict, default=default_db)
         self.parser = parser
         self.request_data = self.parser.parse_args()
         self.selected_db, self.selected_collection, = \
@@ -38,7 +39,8 @@ class TaskDBEndpointsId(Resource):
 class TaskDBEndpoints(Resource):
     def __init__(self):
         parser = reqparse.RequestParser()
-        parser.add_argument('data', type=dict), parser.add_argument('db_config', type=dict)
+        default_db = {"db": "db_task", "collection": "test"}
+        parser.add_argument('data', type=dict), parser.add_argument('db_config', type=dict, default=default_db)
         self.parser = parser
         self.request_data = self.parser.parse_args()
         self.selected_db, self.selected_collection,  = \
