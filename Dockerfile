@@ -4,9 +4,8 @@ WORKDIR .
 ENV FLASK_APP=task_manager/app.py
 ENV FLASK_ENV=development
 ENV PYTHONPATH="."
-RUN apk add --no-cache gcc musl-dev linux-headers
+#RUN apk add --no-cache gcc musl-dev linux-headers
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
-EXPOSE 5000
 COPY . .
 CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
