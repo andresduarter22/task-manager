@@ -21,10 +21,10 @@ pipeline {
         if [ ! -d "$DIR" ]; then
         python3 -m venv venv
         fi
-        source ./venv/bin/activate
+        . ./venv/bin/activate
         export PYTHONPATH="$(pwd)"
         pip3 install -r requirements.txt
-        ./venv/bin/python3 task_manager/app.py
+        ./venv/bin/python3 tests/test_db_task.py
         '''
       }
     }
