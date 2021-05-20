@@ -51,8 +51,8 @@ pipeline {
             stage ('Static Code Analysis') {
                 steps{
                     script {
-                        def scannerHome = tool'sonarqube-task-manager'
-                        withSonarQubeEnv('sonarqube-automation'){
+                        def scannerHome = tool'sonarqube-scanner-at'
+                        withSonarQubeEnv('sonarqube-task-manager'){
                             sh"${scannerHome}/bin/sonar-scanner -Dsonar.projectName=$PROJECT_NAME -Dsonar.projectKey=$PROJECT_NAME -Dsonar.sources=/task_manager"}
                     }
                 }
