@@ -76,5 +76,11 @@ pipeline {
                     """
                 }
             }
+            
         }
+    post {
+        always {
+            emailext body: default, recipientProviders: default, default, subject: default
+        }
+    }
 }
