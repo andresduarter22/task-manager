@@ -4,7 +4,7 @@ pipeline {
 
     environment{
       PROJECT_NAME="task_manager"
-      EMAIL_HEADER = "Hi Devs!\nYour Jenkins here reporting, pipeline execution completed!\n"
+      NEXUS_URL = "10.28.108.139:8082"
     }
 
     stages {
@@ -63,17 +63,19 @@ pipeline {
                 steps{
                     sh """
                         docker build -t task_manager:0.$BUILD_NUMBER .
-                        docker tag task_manager:0.$BUILD_NUMBER 10.28.108.139:8082/task_manager:0.$BUILD_NUMBER
+                        docker tag task_manager:0.$BUILD_NUMBER $NEXUS_URL/task_manager:0.$BUILD_NUMBER
                         echo Docker image built
                     """
                 }
             }
             stage('Promote Docker Image') {
                 steps{
+                    environment{
+                      NEXUS_CREDENTIAL =credentials( "nexus3-docker-user")
+                    }
                     sh """
-                        docker login -u admin -p admin123 10.28.108.139:8082
-                        docker push 10.28.108.139:8082/task_manager:0.$BUILD_NUMBER
-                        echo Docker image succesfully pushed
+                        echo $NEXUS_CREDENTIAL_PSW | docker login -u $NEXUS_CREDETIAL_USR --password-stdin $NEXUS_URL
+                        docker push $NEXUS_URL/task_manager:0.$BUILD_NUMBER
                     """
                 }
             }
@@ -81,6 +83,10 @@ pipeline {
         }
     post {
         always {
+            environment{
+                      EMAIL_HEADER = "Hi Devs!\nYour Jenkins here reporting, pipeline execution completed!\n"
+                    }
+      
             emailext body: "$EMAIL_HEADER ${currentBuild.currentResult}: Job ${env.JOB_NAME} build ${env.BUILD_NUMBER}\n More info at: ${env.BUILD_URL}",
                 recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']],
                 subject: "Jenkins Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}",
