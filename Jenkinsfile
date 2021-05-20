@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Install Requirements') {
             steps {
-                sh """
+                sh '''
                 #Check if OS is Linux, else quit
                 os_ver=$(uname -s)
                 os_needed="Linux"
@@ -20,7 +20,7 @@ pipeline {
                 fi
 
                 #GET the python version, only the major release number
-                var=$(python3 -c 'import platform; major, _, _ = platform.python_version_tuple(); print(major)')
+                var=$(python3 -c \'import platform; major, _, _ = platform.python_version_tuple(); print(major)\')
 
                 case "$var" in
                 "1")
@@ -44,7 +44,7 @@ pipeline {
                 esac
 
                 # Check if in a VENV
-                INVENV=$(python3 -c 'import sys; print ("1" if hasattr(sys, "real_prefix") else "0")')
+                INVENV=$(python3 -c \'import sys; print ("1" if hasattr(sys, "real_prefix") else "0")\')
                 case "$INVENV" in
                 "0")
                     echo "No virtual environment found.. Installing Venv Now...";
@@ -56,7 +56,7 @@ pipeline {
                     echo "python VENV found";
                     ;;
                 esac
-                """
+                '''
                 }
             }
 
