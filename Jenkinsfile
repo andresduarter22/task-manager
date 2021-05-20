@@ -10,7 +10,7 @@ pipeline {
         stage('Install Requirements') {
             steps {
                 sh '''
-                #Check if OS is Linux, else quit
+                
                 os_ver=$(uname -s)
                 os_needed="Linux"
 
@@ -37,9 +37,8 @@ pipeline {
                     echo "python 3 detected";
                     ;;
                 *)
-                    echo "no python detected, proceeding to install python 3.8"
-                    sudo apt update
-                    sudo apt install python3-pip
+                    echo "no python detected, please install python 3.8"
+                    exit 1
                     ;;
                 esac
 
@@ -47,8 +46,7 @@ pipeline {
                 INVENV=$(python3 -c \'import sys; print ("1" if hasattr(sys, "real_prefix") else "0")\')
                 case "$INVENV" in
                 "0")
-                    echo "No virtual environment found.. Installing Venv Now...";
-                    sudo pip3 install virtualenv
+                    echo "No virtual environment found.. Setting Venv up Now...";
                     virtualenv venv
                     source venv/bin/activate
                     ;;
