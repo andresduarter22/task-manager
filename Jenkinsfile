@@ -52,6 +52,7 @@ pipeline {
             docker run --network devops --rm -e SONAR_HOST_URL="http://sonarqube:9000" -e SONAR_LOGIN="618532770490e6d78d802fe043eca3d96168edb2"  -v $PWD:/usr/src sonarsource/sonar-scanner-cli -Dsonar.projectKey="task_manager"
             '''
             */
+        }
       }
     }
     stage('Build image with docker-compose') {
