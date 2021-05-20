@@ -57,7 +57,6 @@ pipeline {
     stage('Build image with docker-compose') {
       steps{
         echo 'TODO docker-compose build and push here'
-        }
       }
     }
     stage('Promote image to registry - Nexus') {
