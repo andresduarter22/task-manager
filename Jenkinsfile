@@ -61,8 +61,8 @@ pipeline {
             stage('Build Docker Image') {
                 steps{
                     sh """
-                        docker build -t task_manager:$BUILD_NUMBER .
-                        sh docker tag task_manager:$BUILD_NUMBER 10.28.108.139:8082/task_manager:$BUILD_NUMBER
+                        docker build -t task_manager:0.$BUILD_NUMBER .
+                        docker tag task_manager:0.$BUILD_NUMBER 10.28.108.139:8082/task_manager:0.$BUILD_NUMBER
                         echo Docker image built
                     """
                 }
@@ -70,7 +70,8 @@ pipeline {
             stage('Promote Docker Image') {
                 steps{
                     sh """
-                        docker push 10.28.108.139:8082/task_manager:$BUILD_NUMBER .
+                        docker login -u admin -p admin123 10.28.108.139:8082
+                        docker push 10.28.108.139:8082/task_manager:0.$BUILD_NUMBER
                         echo Docker image succesfully pushed
                     """
                 }
