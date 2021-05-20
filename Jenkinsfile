@@ -10,7 +10,7 @@ pipeline {
         stage('Install Requirements') {
             steps {
                 sh '''
-                
+
                 os_ver=$(uname -s)
                 os_needed="Linux"
 
@@ -31,7 +31,7 @@ pipeline {
                     exit 1
                     ;;
                 esac
-                
+
                 pip3 install -r requirements.txt
                 '''
                 }
@@ -76,13 +76,14 @@ pipeline {
                     """
                 }
             }
-            
+
         }
     post {
         always {
             emailext body: "${currentBuild.currentResult}: Job ${env.JOB_NAME} build ${env.BUILD_NUMBER}\n More info at: ${env.BUILD_URL}",
                 recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']],
-                subject: "Jenkins Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}"
+                subject: "Jenkins Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}",
+                to: '$DEFAULT_RECIPIENTS'
         }
     }
 }
