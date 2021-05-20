@@ -25,7 +25,6 @@ pipeline {
         . ./venv/bin/activate
         export PYTHONPATH="$(pwd)"
         pip3 install -r requirements.txt
-        ./venv/bin/python3 tests/test_db_task.py
         '''
       }
     }
