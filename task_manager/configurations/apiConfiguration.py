@@ -34,7 +34,7 @@ class ApiConfiguration(QueryBasedConfiguration):
         """
         if load_default:
             import json
-            with open(defs.PATHS['default_api_task_config']) as json_file:
+            with open('./data/configurations/api/base_config_1.json') as json_file:
                 data = json.load(json_file)
                 self.credentials = data['credentials']
                 self.url = data['url']
