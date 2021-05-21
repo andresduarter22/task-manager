@@ -70,7 +70,7 @@ pipeline {
             }
             stage('Promote Docker Image') {
              environment{
-                      NEXUS_CREDENTIAL = credentials("nexus3-docker-user")
+                      NEXUS_CREDENTIAL = credentials("nexus-credential")
              }
                 steps{
 
