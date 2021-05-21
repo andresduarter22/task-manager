@@ -1,10 +1,10 @@
-
 pipeline {
     agent any
 
     environment{
       PROJECT_NAME="task_manager"
       NEXUS_URL = "10.28.108.139:8082"
+      EMAIL_HEADER = "Hi Devs!\nYour Jenkins here reporting, pipeline execution completed!\n"
     }
 
     stages {
@@ -69,12 +69,14 @@ pipeline {
                 }
             }
             stage('Promote Docker Image') {
+             environment{
+                      NEXUS_CREDENTIAL = credentials("nexus3-docker-user")
+             }
                 steps{
-                    environment{
-                      NEXUS_CREDENTIAL =credentials( "nexus3-docker-user")
-                    }
+
                     sh """
-                        echo $NEXUS_CREDENTIAL_PSW | docker login -u $NEXUS_CREDETIAL_USR --password-stdin $NEXUS_URL
+                        echo $NEXUS_CREDENTIAL_PSW | docker login -u $NEXUS_CREDENTIAL_USR --password-stdin $NEXUS_URL
+
                         docker push $NEXUS_URL/task_manager:0.$BUILD_NUMBER
                     """
                 }
@@ -83,10 +85,6 @@ pipeline {
         }
     post {
         always {
-            environment{
-                      EMAIL_HEADER = "Hi Devs!\nYour Jenkins here reporting, pipeline execution completed!\n"
-                    }
-      
             emailext body: "$EMAIL_HEADER ${currentBuild.currentResult}: Job ${env.JOB_NAME} build ${env.BUILD_NUMBER}\n More info at: ${env.BUILD_URL}",
                 recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']],
                 subject: "Jenkins Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}",
