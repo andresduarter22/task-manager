@@ -47,7 +47,7 @@ pipeline {
                     script {
                         def scannerHome = tool'sonarqube-scanner-at'
                         withSonarQubeEnv('sonarqube-task-manager'){
-                            sh"${scannerHome}/bin/sonar-scanner \-Dsonar.projectName=$PROJECT_NAME -Dsonar.projectKey=$PROJECT_NAME -Dsonar.sources=./task_manager"}
+                            sh"${scannerHome}/bin/sonar-scanner -Dsonar.projectName=$PROJECT_NAME -Dsonar.projectKey=$PROJECT_NAME -Dsonar.sources=./task_manager"}
                     }
                 }
             }
