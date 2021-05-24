@@ -13,14 +13,6 @@ pipeline {
             steps {
                 sh '''
 
-                os_ver=$(uname -s)
-                os_needed="Linux"
-
-                if [ "$os_ver" != "$os_needed" ];then
-                    echo "OS Mismatch!"
-                    exit 1
-                fi
-
                 #GET the python version, only the major release number
                 var=$(python3 -c \'import platform; major, _, _ = platform.python_version_tuple(); print(major)\')
 
@@ -62,17 +54,13 @@ pipeline {
 
             stage('Build Docker Image') {
                 steps{
-                    sh """
-                        docker build -t task_manager:0.$BUILD_NUMBER .
-                        docker tag task_manager:0.$BUILD_NUMBER $NEXUS_URL/task_manager:0.$BUILD_NUMBER
-                        echo Docker image built
-                    """
+                    sh 'docker build -t $NEXUS_URL/task_manager:0.$BUILD_NUMBER .'
                 }
             }
             stage('Promote Docker Image') {
-             environment{
+                environment{
                       NEXUS_CREDENTIAL = credentials("nexus-credential")
-             }
+                }
                 steps{
 
                     sh """
@@ -90,6 +78,10 @@ pipeline {
                 recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']],
                 subject: "Jenkins Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}",
                 to: '$DEFAULT_RECIPIENTS'
+            sh """
+            docker rmi -f $NEXUS_URL/task_manager:0.$BUILD_NUMBER
+            docker logout $NEXUS_URL
+            """
         }
     }
 }
