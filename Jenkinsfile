@@ -42,7 +42,7 @@ pipeline {
             withSonarQubeEnv('sonarqube-task-manager') {
             sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectName=$PROJECT_NAME -Dsonar.projectKey=$PROJECT_NAME -Dsonar.sources=."
         }
-        /*sh '''
+        /*sh ''' idk
             docker volume create --name sonarqube_data
             docker volume create --name sonarqube_extensions
             docker volume create --name sonarqube_logs
