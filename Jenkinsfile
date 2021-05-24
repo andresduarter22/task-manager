@@ -52,12 +52,28 @@ pipeline {
                 }
             }
 
-            stage('Build Docker Image') {
+            stage('Build Docker Staging Image') {
+                when {
+                    branch 'development'
+                }
                 steps{
-                    sh 'docker build -t $NEXUS_URL/task_manager:0.$BUILD_NUMBER .'
+                    sh 'docker build -t $NEXUS_URL/task_manager:0.$BUILD_NUMBER-stg .'
                 }
             }
-            stage('Promote Docker Image') {
+        
+            stage('Build Docker Production Image') {
+                when {
+                    branch 'master'
+                }
+                steps{
+                    sh 'docker build -t $NEXUS_URL/task_manager:0.$BUILD_NUMBER-prod .'
+                }
+            } 
+        
+            stage('Promote Docker Staging Image') {
+                when {
+                    branch 'development'
+                }
                 environment{
                       NEXUS_CREDENTIAL = credentials("nexus-credential")
                 }
@@ -66,7 +82,25 @@ pipeline {
                     sh """
                         echo $NEXUS_CREDENTIAL_PSW | docker login -u $NEXUS_CREDENTIAL_USR --password-stdin $NEXUS_URL
 
-                        docker push $NEXUS_URL/task_manager:0.$BUILD_NUMBER
+                        docker push $NEXUS_URL/task_manager:0.$BUILD_NUMBER-stg 
+                    """
+                }
+            }
+        
+            stage('Promote Docker Production Image') {
+                when {
+                    branch 'master'
+                }
+                environment{
+                      NEXUS_CREDENTIAL = credentials("nexus-credential")
+                }
+                
+                steps{
+
+                    sh """
+                        echo $NEXUS_CREDENTIAL_PSW | docker login -u $NEXUS_CREDENTIAL_USR --password-stdin $NEXUS_URL
+
+                        docker push $NEXUS_URL/task_manager:0.$BUILD_NUMBER-prod
                     """
                 }
             }
