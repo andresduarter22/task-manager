@@ -112,10 +112,8 @@ pipeline {
                 recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']],
                 subject: "Jenkins Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}",
                 to: '$DEFAULT_RECIPIENTS'
-            sh """
-            docker rmi -f $NEXUS_URL/task_manager:0.$BUILD_NUMBER
-            docker logout $NEXUS_URL
-            """
+            sh '''docker logout $NEXUS_URL'''
+            
         }
     }
 }
