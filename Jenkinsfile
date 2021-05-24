@@ -1,5 +1,5 @@
 pipeline {
-//just testing webhooks :D
+//just testing webhooks multibranch:D
     agent any
 
     environment{
