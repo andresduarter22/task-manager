@@ -29,7 +29,7 @@ pipeline {
 
             stage('Unit tests') {
                 steps{
-                    sh 'tox -vvv .'
+                    sh 'tox -vvv ./task_manager'
                     }
             }
 
