@@ -68,10 +68,10 @@ pipeline {
                 steps{
 
                     sh """
-                        echo $NEXUS_CREDENTIAL_PSW | docker login -u $NEXUS_CREDENTIAL_USR --password-stdin $PRIVATE_REGISTRY_URL"
-                        docker-compose up -d --scale api=2
+                        echo $NEXUS_CREDENTIAL_PSW | docker login -u $NEXUS_CREDENTIAL_USR --password-stdin $PRIVATE_REGISTRY_URL
+                        docker-compose up -d 
                         sleep 15
-                        curl -I http://localhost:5000 --silent | grep 200"
+                        curl -I http://localhost:5000 --silent | grep 200
                     """
                 }
             }
