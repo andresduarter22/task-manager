@@ -27,13 +27,6 @@ pipeline {
                 }
             }
 
-            stage('Unit tests') {
-                steps{
-                    sh 'tox -vvv .'
-                    }
-            }
-
-
             stage ('Static Code Analysis') {
                 steps{
                     script {
@@ -64,14 +57,28 @@ pipeline {
         
             
 
-            stage('Mount Docker Image') {
+            stage('Mount Docker Staging Image') {
+                when {
+                    branch 'development'
+                }
                 steps{
 
                     sh """
-                        echo $NEXUS_CREDENTIAL_PSW | docker login -u $NEXUS_CREDENTIAL_USR --password-stdin $PRIVATE_REGISTRY_URL"
-                        docker-compose up -d --scale api=2
-                        sleep 15
-                        curl -I http://localhost:5000 --silent | grep 200"
+                        docker run -d -v /home/ubuntu/mongo/data/:/mongo-data mongo
+                        docker run -d $NEXUS_URL/task_manager:0.$BUILD_NUMBER-stg
+                    """
+                }
+            }
+
+            stage('Mount Docker Production Image') {
+                when {
+                    branch 'master'
+                }
+                steps{
+
+                    sh """
+                        docker run -d -v /home/ubuntu/mongo/data/:/mongo-data mongo
+                        docker run -d $NEXUS_URL/task_manager:0.$BUILD_NUMBER-prod
                     """
                 }
             }
@@ -83,8 +90,8 @@ pipeline {
                 steps{
 
                     sh """
-                        sh "curl http://localhost:5000/api/v1/tasks/db | grep 200"
-                        sh "curl http://localhost:5000/api/v1/api_tasks?config={'load_default':'False','url':'http://httpbin.org/get','r_type':'GET'}&data=[]&priority=100 | grep 200"
+                        # sh "curl http://localhost:5000/api/v1/tasks/db | grep 200"
+                        # sh "curl http://localhost:5000/api/v1/api_tasks?config={'load_default':'False','url':'http://httpbin.org/get','r_type':'GET'}&data=[]&priority=100 | grep 200"
                     """
                 }
             }
