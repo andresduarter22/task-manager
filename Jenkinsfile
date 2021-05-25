@@ -64,6 +64,7 @@ pipeline {
                 steps{
 
                     sh """
+                        docker run -d -v /home/ubuntu/mongo/data/:/mongo-data mongo
                         docker run -d $NEXUS_URL/task_manager:0.$BUILD_NUMBER-stg
                     """
                 }
@@ -76,6 +77,7 @@ pipeline {
                 steps{
 
                     sh """
+                        docker run -d -v /home/ubuntu/mongo/data/:/mongo-data mongo
                         docker run -d $NEXUS_URL/task_manager:0.$BUILD_NUMBER-prod
                     """
                 }
