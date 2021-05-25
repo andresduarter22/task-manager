@@ -64,7 +64,7 @@ pipeline {
                 steps{
 
                     sh """
-                        docker run $NEXUS_URL/task_manager:0.$BUILD_NUMBER-stg
+                        docker run -d $NEXUS_URL/task_manager:0.$BUILD_NUMBER-stg
                     """
                 }
             }
@@ -76,7 +76,7 @@ pipeline {
                 steps{
 
                     sh """
-                        docker run $NEXUS_URL/task_manager:0.$BUILD_NUMBER-prod
+                        docker run -d $NEXUS_URL/task_manager:0.$BUILD_NUMBER-prod
                     """
                 }
             }
