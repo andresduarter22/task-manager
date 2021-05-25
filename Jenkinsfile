@@ -27,13 +27,6 @@ pipeline {
                 }
             }
 
-            stage('Unit tests') {
-                steps{
-                    sh 'tox -vvv ./task_manager'
-                    }
-            }
-
-
             stage ('Static Code Analysis') {
                 steps{
                     script {
@@ -68,10 +61,7 @@ pipeline {
                 steps{
 
                     sh """
-                        echo $NEXUS_CREDENTIAL_PSW | docker login -u $NEXUS_CREDENTIAL_USR --password-stdin $PRIVATE_REGISTRY_URL
                         docker-compose up -d 
-                        sleep 15
-                        curl -I http://localhost:5000 --silent | grep 200
                     """
                 }
             }
