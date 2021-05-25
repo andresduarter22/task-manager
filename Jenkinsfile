@@ -57,11 +57,26 @@ pipeline {
         
             
 
-            stage('Mount Docker Image') {
+            stage('Mount Docker Staging Image') {
+                when {
+                    branch 'development'
+                }
                 steps{
 
                     sh """
-                        docker-compose up -d 
+                        docker run $NEXUS_URL/task_manager:0.$BUILD_NUMBER-stg
+                    """
+                }
+            }
+
+            stage('Mount Docker Production Image') {
+                when {
+                    branch 'master'
+                }
+                steps{
+
+                    sh """
+                        docker run $NEXUS_URL/task_manager:0.$BUILD_NUMBER-prod
                     """
                 }
             }
