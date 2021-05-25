@@ -1,5 +1,4 @@
 pipeline {
-//just testing webhooks multibranch 2:D
     agent any
 
     environment{
@@ -12,10 +11,8 @@ pipeline {
         stage('Install Requirements') {
             steps {
                 sh '''
-
                 #GET the python version, only the major release number
                 var=$(python3 -c \'import platform; major, _, _ = platform.python_version_tuple(); print(major)\')
-
                 case "$var" in
                 "3")
                     echo "python 3 detected";
@@ -25,7 +22,6 @@ pipeline {
                     exit 1
                     ;;
                 esac
-
                 pip3 install -r requirements.txt
                 '''
                 }
@@ -33,10 +29,6 @@ pipeline {
 
             stage('Unit tests') {
                 steps{
-
-                    echo "---------------------------------"
-                    echo "Starting Tox..."
-                    echo "---------------------------------"
                     sh 'tox -vvv .'
                     }
             }
@@ -52,12 +44,55 @@ pipeline {
                 }
             }
 
-            stage('Build Docker Image') {
+            stage('Build Docker Staging Image') {
+                when {
+                    branch 'development'
+                }
                 steps{
-                    sh 'docker build -t $NEXUS_URL/task_manager:0.$BUILD_NUMBER .'
+                    sh 'docker build -t $NEXUS_URL/task_manager:0.$BUILD_NUMBER-stg .'
                 }
             }
-            stage('Promote Docker Image') {
+        
+            stage('Build Docker Production Image') {
+                when {
+                    branch 'master'
+                }
+                steps{
+                    sh 'docker build -t $NEXUS_URL/task_manager:0.$BUILD_NUMBER-prod .'
+                }
+            } 
+        
+            
+
+            stage('Mount Docker Image') {
+                steps{
+
+                    sh """
+                        echo $NEXUS_CREDENTIAL_PSW | docker login -u $NEXUS_CREDENTIAL_USR --password-stdin $PRIVATE_REGISTRY_URL"
+                        docker-compose up -d --scale api=2
+                        sleep 15
+                        curl -I http://localhost:5000 --silent | grep 200"
+                    """
+                }
+            }
+
+            stage('Acceptance Testing') {
+                when {
+                    branch 'development'
+                }
+                steps{
+
+                    sh """
+                        sh "curl http://localhost:5000/api/v1/tasks/db | grep 200"
+                        sh "curl http://localhost:5000/api/v1/api_tasks?config={'load_default':'False','url':'http://httpbin.org/get','r_type':'GET'}&data=[]&priority=100 | grep 200"
+                    """
+                }
+            }
+
+            stage('Promote Docker Staging Image') {
+                when {
+                    branch 'development'
+                }
                 environment{
                       NEXUS_CREDENTIAL = credentials("nexus-credential")
                 }
@@ -65,8 +100,24 @@ pipeline {
 
                     sh """
                         echo $NEXUS_CREDENTIAL_PSW | docker login -u $NEXUS_CREDENTIAL_USR --password-stdin $NEXUS_URL
+                        docker push $NEXUS_URL/task_manager:0.$BUILD_NUMBER-stg 
+                    """
+                }
+            }
+        
+            stage('Promote Docker Production Image') {
+                when {
+                    branch 'master'
+                }
+                environment{
+                      NEXUS_CREDENTIAL = credentials("nexus-credential")
+                }
+                
+                steps{
 
-                        docker push $NEXUS_URL/task_manager:0.$BUILD_NUMBER
+                    sh """
+                        echo $NEXUS_CREDENTIAL_PSW | docker login -u $NEXUS_CREDENTIAL_USR --password-stdin $NEXUS_URL
+                        docker push $NEXUS_URL/task_manager:0.$BUILD_NUMBER-prod
                     """
                 }
             }
@@ -78,10 +129,8 @@ pipeline {
                 recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']],
                 subject: "Jenkins Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}",
                 to: '$DEFAULT_RECIPIENTS'
-            sh """
-            docker rmi -f $NEXUS_URL/task_manager:0.$BUILD_NUMBER
-            docker logout $NEXUS_URL
-            """
+            sh '''docker logout $NEXUS_URL'''
+            
         }
     }
 }
