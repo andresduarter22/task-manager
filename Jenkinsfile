@@ -2,16 +2,17 @@ pipeline {
     agent{label 'automation-r'}
 
     environment{
-      PROJECT_NAME="task_manager"
-      NEXUS_URL = "10.28.108.139:8082"
-      EMAIL_HEADER = "Hi Devs!\nYour Jenkins here reporting, pipeline execution completed!\n"
+        PROJECT_NAME="task_manager"
+        NEXUS_URL = "10.28.108.139:8082"
+
+        STAG_TAG = "0.$BUILD_NUMBER-stg"
+        PROD_TAG = "0.$BUILD_NUMBER-prod"
+
+        EMAIL_HEADER = "Hi Devs!\nYour Jenkins here reporting, pipeline execution completed!\n"
     }
 
     stages {
         stage('Install Requirements') {
-            environment{
-                JENKINS_AUTH = 'jenkins'
-                }
 
             steps {
 
@@ -50,7 +51,6 @@ pipeline {
             stage ('Unit Tests') {
                 steps {
                     sh """
-                    # python3 -m coverage run --source=tests/ -m unittest discover 
                     python3 -m coverage run --source=task_manager/ -m unittest discover 
                     python3 -m coverage xml
                     python3 -m coverage report -m
@@ -81,55 +81,25 @@ pipeline {
             }
 
             stage('Build Docker Staging Image') {
-                when {
-                    branch 'development'
-                }
+                when { anyOf { branch 'development'; branch 'devops/multibranch' } }
                 steps{
-                    sh 'docker build -t $NEXUS_URL/task_manager:0.$BUILD_NUMBER-stg .'
+                    sh 'docker build -t $NEXUS_URL/$PROJECT_NAME:$STAG_TAG .'
                 }
             }
-        
-            stage('Build Docker Production Image') {
-                when {
-                    branch 'master'
-                }
-                steps{
-                    sh 'docker build -t $NEXUS_URL/task_manager:0.$BUILD_NUMBER-prod .'
-                }
-            } 
-        
-            
 
             stage('Mount Docker Staging Image') {
-                when {
-                    branch 'development'
-                }
+                when { anyOf { branch 'development'; branch 'devops/multibranch' } }
                 steps{
 
                     sh """
                         docker run -d -v /home/ubuntu/mongo/data/:/mongo-data mongo
-                        docker run -d $NEXUS_URL/task_manager:0.$BUILD_NUMBER-stg
-                    """
-                }
-            }
-
-            stage('Mount Docker Production Image') {
-                when {
-                    branch 'master'
-                }
-                steps{
-
-                    sh """
-                        docker run -d -v /home/ubuntu/mongo/data/:/mongo-data mongo
-                        docker run -d $NEXUS_URL/task_manager:0.$BUILD_NUMBER-prod
+                        docker run -d $NEXUS_URL/$PROJECT_NAME:$STAG_TAG
                     """
                 }
             }
 
             stage('Acceptance Testing') {
-                when {
-                    branch 'development'
-                }
+                when { anyOf { branch 'development'; branch 'devops/multibranch' } }
                 steps{
 
                     sh """
@@ -141,9 +111,7 @@ pipeline {
             }
 
             stage('Promote Docker Staging Image') {
-                when {
-                    branch 'development'
-                }
+                when { anyOf { branch 'development'; branch 'devops/multibranch' } }
                 environment{
                       NEXUS_CREDENTIAL = credentials("nexus-credential")
                 }
@@ -151,15 +119,31 @@ pipeline {
 
                     sh """
                         echo $NEXUS_CREDENTIAL_PSW | docker login -u $NEXUS_CREDENTIAL_USR --password-stdin $NEXUS_URL
-                        docker push $NEXUS_URL/task_manager:0.$BUILD_NUMBER-stg 
+                        docker push $NEXUS_URL/$PROJECT_NAME:$STAG_TAG
+                    """
+                }
+            }
+        
+            stage('Build Docker Production Image') {
+                when { branch 'master' }
+                steps{
+                    sh 'docker build -t $NEXUS_URL/$PROJECT_NAME:$PROD_TAG .'
+                }
+            } 
+
+            stage('Mount Docker Production Image') {
+                when { branch 'master' }
+                steps{
+
+                    sh """
+                        docker run -d -v /home/ubuntu/mongo/data/:/mongo-data mongo
+                        docker run -d $NEXUS_URL/$PROJECT_NAME:$PROD_TAG
                     """
                 }
             }
         
             stage('Promote Docker Production Image') {
-                when {
-                    branch 'master'
-                }
+                when { branch 'master' }
                 environment{
                       NEXUS_CREDENTIAL = credentials("nexus-credential")
                 }
@@ -168,7 +152,7 @@ pipeline {
 
                     sh """
                         echo $NEXUS_CREDENTIAL_PSW | docker login -u $NEXUS_CREDENTIAL_USR --password-stdin $NEXUS_URL
-                        docker push $NEXUS_URL/task_manager:0.$BUILD_NUMBER-prod
+                        docker push $NEXUS_URL/$PROJECT_NAME:$PROD_TAG
                     """
                 }
             }
