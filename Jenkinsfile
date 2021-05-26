@@ -103,8 +103,8 @@ pipeline {
                 steps{
 
                     sh """
-                        /bin/curl http://0.0.0.0:5000/api/v1/tasks/db | grep 200
-                        /bin/curl http://0.0.0.0:5000/api/v1/api_tasks?config={'load_default':'False','url':'http://httpbin.org/get','r_type':'GET'}&data=[]&priority=100 | grep 200
+                        /bin/curl -v http://localhost:5000/api/v1/tasks/db | grep 200
+                        /bin/curl -v http://localhost:5000/api/v1/api_tasks?config={'load_default':'False','url':'http://httpbin.org/get','r_type':'GET'}&data=[]&priority=100 | grep 200
 
                     """
                 }
