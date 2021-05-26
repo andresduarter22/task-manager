@@ -50,7 +50,7 @@ pipeline {
             stage ('Unit Tests') {
             steps {
                 sh """
-                python3 -m coverage run -m unittest tests
+                python3 -m coverage run --source=tests/ 
                 python3 -m coverage xml
                 """
             }
@@ -61,7 +61,7 @@ pipeline {
                     script {
                         def scannerHome = tool'sonarqube-scanner-at'
                         withSonarQubeEnv('sonarqube-task-manager'){
-                            sh"${scannerHome}/bin/sonar-scanner -Dsonar.projectName=$PROJECT_NAME -Dsonar.projectKey=$PROJECT_NAME -Dsonar.sources=./task_manager"}
+                            sh"${scannerHome}/bin/sonar-scanner -Dsonar.projectName=$PROJECT_NAME -Dsonar.projectKey=$PROJECT_NAME -Dsonar.python.coverage.reportPaths=coverage.xml -Dsonar.sources=./task_manager"}
                     }
                 }
             }
