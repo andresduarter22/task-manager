@@ -43,28 +43,18 @@ pipeline {
 
 
                 pip3 install -r requirements.txt
-
-
-                # Check if in a VENV
-                INVENV=$(python3 -c 'import sys; print ("1" if hasattr(sys, "real_prefix") else "0")')
-                case "$INVENV" in
-                "0")
-                    echo "No virtual environment found.. Installing Venv Now...";
-                    # echo $JENKINS_AUTH | sudo -S pip3 install virtualenv
-                    # virtualenv venv
-                    apt-get install python3-venv
-                    python3 -m venv .venv/
-                    . .venv/bin/activate
-                    ;;
-                "1")
-                    echo "python VENV found";
-                    ;;
-                esac
-
-                
                 '''
                 }
             }
+
+            stage ('Unit Tests') {
+            steps {
+                sh """
+                coverage run -m pytest tests
+                coverage xml
+                """
+            }
+        }
 
             stage ('Static Code Analysis') {
                 steps{

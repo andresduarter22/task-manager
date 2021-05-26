@@ -7,3 +7,4 @@ redis~=3.5.3
 pymongo
 build
 virtualenv
+coverage==5.5
