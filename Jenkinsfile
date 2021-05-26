@@ -49,8 +49,8 @@ pipeline {
                 INVENV=$(python3 -c 'import sys; print ("1" if hasattr(sys, "real_prefix") else "0")')
                 case "$INVENV" in
                 "0")
-        //            echo "No virtual environment found.. Installing Venv Now...";
-        //            echo $JENKINS_AUTH | sudo -S pip3 install virtualenv
+                    echo "No virtual environment found.. Installing Venv Now...";
+                    # echo $JENKINS_AUTH | sudo -S pip3 install virtualenv
                     virtualenv venv
                     . .env/bin/activate
                     ;;
