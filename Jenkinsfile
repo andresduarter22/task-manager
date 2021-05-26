@@ -1,5 +1,5 @@
 pipeline {
-    agent {automation-r}
+    agent {label: "automation-r"}
 
     environment{
       PROJECT_NAME="task_manager"
@@ -50,7 +50,7 @@ pipeline {
                     echo "python VENV found";
                     ;;
                 esac
-                
+
                 pip3 install -r requirements.txt
                 '''
                 }
