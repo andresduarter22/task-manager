@@ -16,7 +16,6 @@ pipeline {
             steps {
 
                 sh '''
-                
 
                 #GET the python version, only the major release number
                 var=$(python3 -c 'import platform; major, _, _ = platform.python_version_tuple(); print(major)')
@@ -42,21 +41,25 @@ pipeline {
                     ;;
                 esac
 
+
+                pip3 install -r requirements.txt
+
+
                 # Check if in a VENV
                 INVENV=$(python3 -c 'import sys; print ("1" if hasattr(sys, "real_prefix") else "0")')
                 case "$INVENV" in
                 "0")
-                    echo "No virtual environment found.. Installing Venv Now...";
-                    echo $JENKINS_AUTH | sudo -S pip3 install virtualenv
+        //            echo "No virtual environment found.. Installing Venv Now...";
+        //            echo $JENKINS_AUTH | sudo -S pip3 install virtualenv
                     virtualenv venv
-                    source venv/bin/activate
+                    . .env/bin/activate
                     ;;
                 "1")
                     echo "python VENV found";
                     ;;
                 esac
 
-                pip3 install -r requirements.txt
+                
                 '''
                 }
             }
