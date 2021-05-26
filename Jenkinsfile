@@ -105,6 +105,7 @@ pipeline {
                 when { anyOf { branch 'development'; branch 'devops/multibranch' } }
                 environment {
                     TAG = "$STAG_TAG"
+                    NEXUS_CREDENTIAL = credentials("nexus-credential")
                 }
                 steps{
 
