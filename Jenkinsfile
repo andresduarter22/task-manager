@@ -48,15 +48,15 @@ pipeline {
                 }
             }
 
-            stage ('Unit Tests') {
-                steps {
-                    sh """
-                    python3 -m coverage run --source=task_manager/ -m unittest discover 
-                    python3 -m coverage xml
-                    python3 -m coverage report -m
-                    """
-                }
-            }
+            // stage ('Unit Tests') {
+            //     steps {
+            //         sh """
+            //         python3 -m coverage run --source=task_manager/ -m unittest discover 
+            //         python3 -m coverage xml
+            //         python3 -m coverage report -m
+            //         """
+            //     }
+            // }
 
             
 
