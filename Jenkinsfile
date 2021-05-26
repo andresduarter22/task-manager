@@ -48,15 +48,15 @@ pipeline {
                 }
             }
 
-            // stage ('Unit Tests') {
-            //     steps {
-            //         sh """
-            //         python3 -m coverage run --source=task_manager/ -m unittest discover 
-            //         python3 -m coverage xml
-            //         python3 -m coverage report -m
-            //         """
-            //     }
-            // }
+            stage ('Unit Tests') {
+                steps {
+                    sh """
+                    python3 -m coverage run --source=task_manager/ -m unittest discover 
+                    python3 -m coverage xml
+                    python3 -m coverage report -m
+                    """
+                }
+            }
 
             
 
@@ -111,7 +111,7 @@ pipeline {
 
                     sh """
                         echo $NEXUS_CREDENTIAL_PSW | docker login -u $NEXUS_CREDENTIAL_USR --password-stdin $NEXUS_URL
-                        docker-compose up -d
+                        /usr/bin/docker-compose up -d
                         sleep 15
                         /bin/curl -I http://localhost:5000/api/v1/api_tasks?config={'load_default':'False','url':'http://httpbin.org/get','r_type':'GET'}&data=[]&priority=100 | grep 200
                     """
