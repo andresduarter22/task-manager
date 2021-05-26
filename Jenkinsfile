@@ -50,7 +50,7 @@ pipeline {
             stage ('Unit Tests') {
             steps {
                 sh """
-                python3 -m coverage run -m pytest tests
+                python3 -m coverage run -m unittest tests
                 python3 -m coverage xml
                 """
             }
