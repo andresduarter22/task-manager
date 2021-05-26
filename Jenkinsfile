@@ -91,10 +91,7 @@ pipeline {
                 when { anyOf { branch 'development'; branch 'devops/multibranch' } }
                 steps{
 
-                    sh """
-                        docker run -d -v /home/ubuntu/mongo/data/:/mongo-data mongo
-                        docker run -d $NEXUS_URL/$PROJECT_NAME:$STAG_TAG
-                    """
+                    sh 'docker-compose up'
                 }
             }
 
