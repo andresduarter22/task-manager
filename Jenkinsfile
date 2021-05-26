@@ -113,7 +113,7 @@ pipeline {
                         echo $NEXUS_CREDENTIAL_PSW | docker login -u $NEXUS_CREDENTIAL_USR --password-stdin $NEXUS_URL
                         /usr/bin/docker-compose up -d
                         sleep 15
-                        /bin/curl -I http://localhost:5000/api/v1/api_tasks?config={'load_default':'False','url':'http://httpbin.org/get','r_type':'GET'}&data=[]&priority=100 | grep 200
+                        /bin/curl -I http://localhost:5000 | grep 200
                     """
                 }
             }
