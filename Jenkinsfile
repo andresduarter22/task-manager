@@ -87,11 +87,25 @@ pipeline {
                 }
             }
 
+            stage('Promote Docker Staging Image') {
+                when { anyOf { branch 'development'; branch 'devops/multibranch' } }
+                environment{
+                      NEXUS_CREDENTIAL = credentials("nexus-credential")
+                }
+                steps{
+
+                    sh """
+                        echo $NEXUS_CREDENTIAL_PSW | docker login -u $NEXUS_CREDENTIAL_USR --password-stdin $NEXUS_URL
+                        docker push $NEXUS_URL/$PROJECT_NAME:$STAG_TAG
+                    """
+                }
+            }
+
             stage('Mount Docker Staging Image') {
                 when { anyOf { branch 'development'; branch 'devops/multibranch' } }
                 steps{
 
-                    sh 'docker-compose up .'
+                    sh 'docker-compose up'
                 }
             }
 
@@ -107,19 +121,7 @@ pipeline {
                 }
             }
 
-            stage('Promote Docker Staging Image') {
-                when { anyOf { branch 'development'; branch 'devops/multibranch' } }
-                environment{
-                      NEXUS_CREDENTIAL = credentials("nexus-credential")
-                }
-                steps{
-
-                    sh """
-                        echo $NEXUS_CREDENTIAL_PSW | docker login -u $NEXUS_CREDENTIAL_USR --password-stdin $NEXUS_URL
-                        docker push $NEXUS_URL/$PROJECT_NAME:$STAG_TAG
-                    """
-                }
-            }
+            
         
             stage('Build Docker Production Image') {
                 when { branch 'master' }
