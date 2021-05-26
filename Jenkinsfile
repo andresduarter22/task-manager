@@ -9,7 +9,12 @@ pipeline {
 
     stages {
         stage('Install Requirements') {
+            environment{
+                JENKINS_AUTH = 'jenkins'
+                }
+
             steps {
+
                 sh '''
                 
 
@@ -42,7 +47,7 @@ pipeline {
                 case "$INVENV" in
                 "0")
                     echo "No virtual environment found.. Installing Venv Now...";
-                    sudo pip3 install virtualenv
+                    echo $JENKINS_AUTH | sudo -S pip3 install virtualenv
                     virtualenv venv
                     source venv/bin/activate
                     ;;
