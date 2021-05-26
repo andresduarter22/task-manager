@@ -48,25 +48,17 @@ pipeline {
             }
 
             stage ('Unit Tests') {
-            steps {
-                sh """
-                # python3 -m coverage run --source=tests/ -m unittest discover 
-                python3 -m coverage run --source=task_manager/ -m unittest discover 
-                python3 -m coverage xml
-                python3 -m coverage report -m
-                """
+                steps {
+                    sh """
+                    # python3 -m coverage run --source=tests/ -m unittest discover 
+                    python3 -m coverage run --source=task_manager/ -m unittest discover 
+                    python3 -m coverage xml
+                    python3 -m coverage report -m
+                    """
                 }
             }
 
-            stage("Quality Gate") {
-            steps {
-                timeout(time: 10, unit: 'MINUTES') {
-                    // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
-                    // true = set pipeline to UNSTABLE, false = don't
-                    waitForQualityGate abortPipeline: true
-                    }
-                }
-            }
+            
 
             stage ('Static Code Analysis') {
                 steps{
@@ -74,6 +66,16 @@ pipeline {
                         def scannerHome = tool'sonarqube-scanner-at'
                         withSonarQubeEnv('sonarqube-task-manager'){
                             sh"${scannerHome}/bin/sonar-scanner -Dsonar.projectName=$PROJECT_NAME -Dsonar.projectKey=$PROJECT_NAME -Dsonar.sources=. -Dsonar.python.coverage.reportPaths=coverage.xml"}
+                    }
+                }
+            }
+
+            stage("Quality Gate") {
+                steps {
+                    timeout(time: 10, unit: 'MINUTES') {
+                        // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
+                        // true = set pipeline to UNSTABLE, false = don't
+                        waitForQualityGate abortPipeline: true
                     }
                 }
             }
