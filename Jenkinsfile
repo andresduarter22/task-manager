@@ -107,7 +107,7 @@ pipeline {
 
                     sh """
                         docker run -d --network tasknet -v /home/ubuntu/mongo/data/:/mongo-data mongo
-                        docker run -d --network tasknet $NEXUS_URL/$PROJECT_NAME:$PROD_TAG
+                        docker run -d --network tasknet $NEXUS_URL/$PROJECT_NAME:$STAG_TAG
                     """
                 }
             }
