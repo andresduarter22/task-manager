@@ -103,9 +103,17 @@ pipeline {
 
             stage('Mount Docker Staging Image') {
                 when { anyOf { branch 'development'; branch 'devops/multibranch' } }
+                environment {
+                    TAG = "$STAG_TAG"
+                }
                 steps{
 
-                    sh 'docker-compose up -d'
+                    sh """
+                        echo $NEXUS_CREDENTIAL_PSW | docker login -u $NEXUS_CREDENTIAL_USR --password-stdin $NEXUS_URL
+                        docker-compose up -d
+                        sleep 15
+                        /bin/curl -I http://localhost:5000/api/v1/api_tasks?config={'load_default':'False','url':'http://httpbin.org/get','r_type':'GET'}&data=[]&priority=100 | grep 200
+                    """
                 }
             }
 
