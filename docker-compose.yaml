@@ -1,5 +1,16 @@
 version: "3.5"
 services:
+
+    web:
+        image: ${NEXUS_URL}/${PROJECT_NAME}:${TAG}
+        ports:
+            - 5000:5000
+        depends_on:
+            - mongo
+            - redis
+        networks:
+            - tasknet
+
     mongo:
         image: mongo:latest
         networks:
@@ -7,14 +18,10 @@ services:
         volumes:
             - mongodata:/data/db
 
-    web:
-        links:
-            - mongo:mongo
-        image: ${NEXUS_URL}/${PROJECT_NAME}:${TAG}
+    redis:
+        image: redis:latest
         ports:
-            - 5000:5000
-        depends_on:
-            - mongo
+            - 6379:6379
         networks:
             - tasknet
 
