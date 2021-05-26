@@ -51,14 +51,16 @@ pipeline {
             stage ('Unit Tests') {
                 steps {
                     sh """
-                    python3 -m coverage run --source=task_manager/ -m unittest discover 
+                    docker run -d --name mongo -v /home/ubuntu/mongo/data/:/mongo-data mongo
+                    python3 -m coverage run --source=task_manager/ -m unittest discover
                     python3 -m coverage xml
                     python3 -m coverage report -m
+                    docker rm -f mongo
                     """
                 }
             }
 
-            
+
 
             stage ('Static Code Analysis') {
                 steps{
@@ -123,21 +125,21 @@ pipeline {
                 steps{
 
                     sh """
-                        /bin/curl -v http://localhost:5000/api/v1/tasks/db 
+                        /bin/curl -v http://localhost:5000/api/v1/tasks/db
                         /bin/curl -v http://localhost:5000/api/v1/api_tasks?config={'load_default':'False','url':'http://httpbin.org/get','r_type':'GET'}&data=[]&priority=100 | grep 200
 
                     """
                 }
             }
 
-            
-        
+
+
             stage('Build Docker Production Image') {
                 when { branch 'master' }
                 steps{
                     sh 'docker build -t $NEXUS_URL/$PROJECT_NAME:$PROD_TAG .'
                 }
-            } 
+            }
 
             stage('Mount Docker Production Image') {
                 when { branch 'master' }
@@ -149,13 +151,13 @@ pipeline {
                     """
                 }
             }
-        
+
             stage('Promote Docker Production Image') {
                 when { branch 'master' }
                 environment{
                       NEXUS_CREDENTIAL = credentials("nexus-credential")
                 }
-                
+
                 steps{
 
                     sh """
@@ -173,7 +175,7 @@ pipeline {
                 subject: "Jenkins Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}",
                 to: '$DEFAULT_RECIPIENTS'
             sh '''docker logout $NEXUS_URL'''
-            
+
         }
     }
 }
