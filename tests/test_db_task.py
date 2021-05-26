@@ -41,16 +41,16 @@ class Evaluate(unittest.TestCase):
                 }
         self.assertEqual(expected, actual)
 
-    def test_delete(self):
-        data = {"_id": 2, "First name": "Andres"}
-        mongo = MongoDbConnector("localhost,27017,db_task,test", ["2", data])
-        document = mongo.select_by_id()
-        if document is not None:
-            actual = mongo.delete()
-        else:
-            actual = "Document doesn't exist"
-        expected = {"response": "Document successfully deleted"}
-        self.assertEqual(expected, actual)
+    # def test_delete(self):
+    #     data = {"_id": 2, "First name": "Andres"}
+    #     mongo = MongoDbConnector("localhost,27017,db_task,test", ["2", data])
+    #     document = mongo.select_by_id()
+    #     if document is not None:
+    #         actual = mongo.delete()
+    #     else:
+    #         actual = "Document doesn't exist"
+    #     expected = {"response": "Document successfully deleted"}
+    #     self.assertEqual(expected, actual)
 
 
 if __name__ == '__main__':
