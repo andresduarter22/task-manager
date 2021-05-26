@@ -51,7 +51,8 @@ pipeline {
                 "0")
                     echo "No virtual environment found.. Installing Venv Now...";
                     # echo $JENKINS_AUTH | sudo -S pip3 install virtualenv
-                    virtualenv venv
+                    # virtualenv venv
+                    python3 -m venv .venv/
                     . .venv/bin/activate
                     ;;
                 "1")
