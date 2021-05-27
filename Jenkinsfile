@@ -113,9 +113,7 @@ pipeline {
 
                     sh """
                         echo $NEXUS_CREDENTIAL_PSW | docker login -u $NEXUS_CREDENTIAL_USR --password-stdin $NEXUS_URL
-                        /usr/bin/docker-compose up -d
-                        sleep 15
-                        /bin/curl -I http://localhost:5000 | grep 200
+                        docker-compose up -d
                     """
                 }
             }
@@ -125,30 +123,17 @@ pipeline {
                 steps{
 
                     sh """
-                        /bin/curl -v http://localhost:5000/api/v1/tasks/db
-                        /bin/curl -v http://localhost:5000/api/v1/api_tasks?config={'load_default':'False','url':'http://httpbin.org/get','r_type':'GET'}&data=[]&priority=100 | grep 200
+                        /bin/curl -I http://localhost:5000/api/v1/tasks/db | grep 200
+                        /bin/curl -I http://localhost:5000/api/v1/api_tasks?config={'load_default':'False','url':'http://httpbin.org/get','r_type':'GET'}&data=[]&priority=100 | grep 200
 
                     """
                 }
             }
-
-
 
             stage('Build Docker Production Image') {
                 when { branch 'master' }
                 steps{
                     sh 'docker build -t $NEXUS_URL/$PROJECT_NAME:$PROD_TAG .'
-                }
-            }
-
-            stage('Mount Docker Production Image') {
-                when { branch 'master' }
-                steps{
-
-                    sh """
-                        docker run -d -v /home/ubuntu/mongo/data/:/mongo-data mongo
-                        docker run -d $NEXUS_URL/$PROJECT_NAME:$PROD_TAG
-                    """
                 }
             }
 
@@ -166,6 +151,23 @@ pipeline {
                     """
                 }
             }
+
+            stage('Mount Docker Production Image') {
+                when { branch 'master' }
+                environment {
+                    TAG = "$PROD_TAG"
+                    NEXUS_CREDENTIAL = credentials("nexus-credential")
+                }
+                steps{
+
+                    sh """
+                        echo $NEXUS_CREDENTIAL_PSW | docker login -u $NEXUS_CREDENTIAL_USR --password-stdin $NEXUS_URL
+                        docker-compose up -d
+                    """
+                }
+            }
+
+            
 
         }
     post {
