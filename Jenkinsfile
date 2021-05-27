@@ -51,7 +51,7 @@ pipeline {
             stage ('Unit Tests') {
                 steps {
                     sh """
-                    docker run -d -- rm --name mongo -p 27017:27017 -v /home/ubuntu/mongo/data/:/mongo-data mongo
+                    docker run -d --rm --name mongo -p 27017:27017 -v /home/ubuntu/mongo/data/:/mongo-data mongo
                     python3 -m coverage run --source=task_manager/ -m unittest discover
                     python3 -m coverage xml
                     python3 -m coverage report -m
