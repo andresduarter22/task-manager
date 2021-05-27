@@ -120,11 +120,14 @@ pipeline {
 
             stage('Acceptance Testing') {
                 when { anyOf { branch 'development'; branch 'devops/multibranch' } }
+                environment {
+                    API_URL = "${config={'load_default':'False','url':'http://httpbin.org/get','r_type':'GET'}&data=[]&priority=100}"
+                }
                 steps{
 
                     sh """
                         /bin/curl -I http://localhost:5000/api/v1/tasks/db | grep 200
-                        /bin/curl -I http://localhost:5000/api/v1/api_tasks?config={'load_default':'False','url':'http://httpbin.org/get','r_type':'GET'}&data=[]&priority=100 | grep 200
+                        /bin/curl -I http://localhost:5000/api/v1/api_tasks?$API_URL | grep 200
 
                     """
                 }
