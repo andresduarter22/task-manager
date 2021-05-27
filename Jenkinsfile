@@ -1,5 +1,5 @@
 pipeline {
-    agent{label 'automation-a'}
+    agent{label 'automation'}
 
     environment{
         PROJECT_NAME="task_manager"
