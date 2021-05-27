@@ -121,7 +121,7 @@ pipeline {
             stage('Acceptance Testing') {
                 when { anyOf { branch 'development'; branch 'devops/multibranch' } }
                 environment {
-                    API_URL = $"{config={'load_default':'False','url':'http://httpbin.org/get','r_type':'GET'}&data=[]&priority=100}"
+                    API_URL = "${config={'load_default':'False','url':'http://httpbin.org/get','r_type':'GET'}&data=[]&priority=100}"
                 }
                 steps{
 
