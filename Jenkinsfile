@@ -1,5 +1,5 @@
 pipeline {
-    agent{label 'automation-r'}
+    agent{label 'automation'}
 
     environment{
         PROJECT_NAME="task_manager"
@@ -124,9 +124,7 @@ pipeline {
 
                     sh """
                         /bin/curl -I http://localhost:5000/api/v1/tasks/db | grep 200
-                        /bin/curl -I http://localhost:5000/api/v1/api_tasks
-                        
-
+                        /bin/curl -I http://localhost:5000/api/v1/api_tasks | grep 400
                     """
                 }
             }
@@ -167,9 +165,6 @@ pipeline {
                     """
                 }
             }
-
-            
-
         }
     post {
         always {
