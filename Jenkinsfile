@@ -83,14 +83,14 @@ pipeline {
             }
 
             stage('Build Docker Staging Image') {
-                when { anyOf { branch 'development'; branch 'devops/multibranch' } }
+                when { anyOf { branch 'development'; branch 'devops/multibranch'; branch 'devops/webhooks' } }
                 steps{
                     sh 'docker build -t $NEXUS_URL/$PROJECT_NAME:$STAG_TAG .'
                 }
             }
 
             stage('Promote Docker Staging Image') {
-                when { anyOf { branch 'development'; branch 'devops/multibranch' } }
+                when { anyOf { branch 'development'; branch 'devops/multibranch'; branch 'devops/webhooks' } }
                 environment{
                       NEXUS_CREDENTIAL = credentials("nexus-credential")
                 }
@@ -104,7 +104,7 @@ pipeline {
             }
 
             stage('Mount Docker Staging Image') {
-                when { anyOf { branch 'development'; branch 'devops/multibranch' } }
+                when { anyOf { branch 'development'; branch 'devops/multibranch'; branch 'devops/webhooks' } }
                 environment {
                     TAG = "$STAG_TAG"
                     NEXUS_CREDENTIAL = credentials("nexus-credential")
@@ -119,7 +119,7 @@ pipeline {
             }
 
             stage('Acceptance Testing') {
-                when { anyOf { branch 'development'; branch 'devops/multibranch' } }
+                when { anyOf { branch 'development'; branch 'devops/multibranch'; branch 'devops/webhooks' } }
                 steps{
 
                     sh """
