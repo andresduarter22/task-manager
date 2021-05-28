@@ -7,7 +7,6 @@ services:
             - 5000:5000
         depends_on:
             - mongo
-            - redis
         networks:
             - tasknet
 
@@ -17,13 +16,6 @@ services:
             - tasknet
         volumes:
             - mongodata:/data/db
-
-    redis:
-        image: redis:latest
-        ports:
-            - 6379:6379
-        networks:
-            - tasknet
 
 networks:
     tasknet:
